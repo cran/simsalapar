@@ -1,8 +1,9 @@
 \name{device}
-\title{Cropping and Font Embedding PDF Device}
 \alias{dev.off.pdf}
+\title{Cropping and Font Embedding PDF Device}
 \description{
-  \code{dev.off.pdf()} is meant for closing a pdf device. It also performs
+  \code{dev.off.pdf()} is a wrapper of \code{\link{dev.off}()} which is
+  meant for closing a pdf device. It also performs
   cropping and font embedding if chosen.
 }
 \usage{
@@ -10,18 +11,23 @@ dev.off.pdf(file="Rplots.pdf", crop=NULL, embedFonts="", ...)
 }
 \arguments{
   \item{file}{output file name including extension .pdf.}
-  \item{crop}{crop command, can be one of:
+  \item{crop}{cropping command, can be one of:
     \describe{
-      \item{\code{\link{NULL}}}{crop with a default command (suitable
-	for Unix; for non-Unix, no cropping is done in this case).}
-      \item{\code{\link{character}}}{a string containing a crop
+      \item{\code{\link{NULL}}}{crop with the command \code{"pdfcrop
+      --pdftexcmd pdftex file file 1>/dev/null 2>&1"}. This is suitable
+	for Unix; for non-Unix, no cropping is done.}
+      \item{\code{\link{character}}}{a string containing the crop
 	command.}
       \item{""}{do not crop.}
-  }}
+    }
+  }
   \item{embedFonts}{font embedding command, can be one of:
     \describe{
-      \item{\code{\link{NULL}}}{font embedding with a default command (suitable
-	for Unix; for non-Unix, no font embedding is done in this case).}
+      \item{\code{\link{NULL}}}{embed fonts with the command
+	\code{embedFonts(file, options="-dSubsetFonts=true
+	  -dEmbedAllFonts=true -dPDFSETTINGS=/printer
+	  -dUseCIEColor")}. This is suitable for Unix; for non-Unix,
+	  no font embedding is done.}
       \item{\code{\link{character}}}{a string containing a font embedding
 	command.}
       \item{""}{do not embed fonts.}
@@ -33,7 +39,9 @@ dev.off.pdf(file="Rplots.pdf", crop=NULL, embedFonts="", ...)
 }
 \author{Marius Hofert.}
 \seealso{
-  \pkg{sfsmisc}'s \code{\link{pdf.end}()}.
+  \code{\link{dev.off}()} for closing a device,
+  \code{\link{embedFonts}()} for font embedding.
+  \pkg{sfsmisc}'s \code{\link{pdf.end}()} for another approach.
 }
 \examples{
 ## definition
