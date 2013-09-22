@@ -25,7 +25,8 @@ doLapply(vList, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, ...)
 doForeach(vList, doCluster = !(missing(spec) && missing(type)),
-       spec=detectCores(), type="MPI",
+       spec=detectCores(),
+       type = if(.Platform$OS.type == "windows") "PSOCK" else "MPI",
        block.size = 1, seed="seq", repFirst=TRUE, sfile=NULL,
        check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, extraPkgs=character(), exports=character(), ...)
@@ -38,7 +39,8 @@ doMclapply(vList, cores = if(.Platform$OS.type == "windows") 1 else detectCores(
        load.balancing=TRUE, block.size = 1, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, ...)
-doClusterApply(vList, spec=detectCores(), type="MPI",
+doClusterApply(vList, spec=detectCores(),
+       type = if(.Platform$OS.type == "windows") "PSOCK" else "MPI",
        load.balancing=TRUE, block.size = 1, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, initExpr, exports=character(), ...)
@@ -53,11 +55,11 @@ doRes.equal(x, y, tol = 1e-15, ...)
       type)} should be called and registered.  If false as by default,
     \code{spec} is used to specify the number of cores to be used.}
   \item{spec}{a specification appropriate to the type of cluster (see
-    \code{type}); if \code{doCluster} is false, and for the default
+    \code{type}); if \code{doCluster} is false, and for the % non-Win default
     \code{type = "MPI"}, the number of nodes.}
   \item{type}{the cluster type, see \code{\link{makeCluster}()} from
     package \pkg{parallel}.  For reasons why we choose \code{"MPI"}
-    as default, see the discussion starting at
+    as default if not on Windows, see the discussion starting at
     \url{https://stat.ethz.ch/pipermail/r-sig-hpc/2013-April/001647.html}}
   \item{cores}{the number of cores.}
   \item{nslaves}{the number of \dQuote{slaves} for \code{doRmpi}, passed

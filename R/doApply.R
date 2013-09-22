@@ -90,12 +90,15 @@ doLapply <- function(vList, seed="seq", repFirst=TRUE, sfile=NULL,
 ##' @author Marius Hofert and Martin Maechler
 ##' @note Works on multiple nodes or cores
 ##' { doForeach }
-doForeach <- function(vList, doCluster = !(missing(spec) && missing(type)),
-                      spec=detectCores(), type="MPI", block.size=1,
-                      seed="seq", repFirst=TRUE,
-                      sfile=NULL, check=TRUE, doAL=TRUE,
-                      subjob.=subjob, monitor=FALSE, doOne,
-                      extraPkgs=character(), exports=character(), ...)
+doForeach <-
+    function(vList, doCluster = !(missing(spec) && missing(type)),
+             spec = detectCores(),
+             type = if(.Platform$OS.type == "windows") "PSOCK" else "MPI",
+             block.size=1,
+             seed="seq", repFirst=TRUE,
+             sfile=NULL, check=TRUE, doAL=TRUE,
+             subjob.=subjob, monitor=FALSE, doOne,
+             extraPkgs=character(), exports=character(), ...)
 {
     ## Unfortunately, imports() ends not finding 'iter' from pkg "iterators":
     ## --> rather strictly require things here:
@@ -349,7 +352,8 @@ doMclapply <-
 ##' @note Works on multiple nodes or cores
 ##' { doClusterApply }
 doClusterApply <-
-    function(vList, spec=detectCores(), type="MPI",
+    function(vList, spec=detectCores(),
+             type = if(.Platform$OS.type == "windows") "PSOCK" else "MPI",
              load.balancing=TRUE, block.size=1, seed="seq", repFirst=TRUE,
              sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
              doOne, initExpr, exports=character(), ...)

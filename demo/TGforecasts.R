@@ -132,18 +132,21 @@ system.time(res <- doLapply(varList, #sfile="TGforecasts_res_l.rds",
 			    doOne=doOne, monitor=TRUE))
 
 ## parallel
-doFork <- (.Platform$OS.type != "windows")
-doSock <- TRUE
+canFork <- (.Platform$OS.type != "windows")
+(hasRmpi <- require("Rmpi"))# not on Windows
+
+useSock <- TRUE
 system.time(resM <- doMclapply(varList, sfile="TGforecasts_res_M.rds",
 			       doOne=doOne, monitor=TRUE))
 system.time(resC <- doClusterApply(varList, sfile="TGforecasts_res_C.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
-if(doSock)
+if(useSock)
 system.time(resCP<- doClusterApply(varList, type="PSOCK", sfile="TGforecasts_res_CP.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
-if(doFork)
+if(canFork)
 system.time(resCF<- doClusterApply(varList, type="FORK", sfile="TGforecasts_res_CF.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
+if(hasRmpi)
 system.time(resR <- doRmpi(varList, sfile="TGforecasts_res_R.rds",
 			   doOne=doOne, monitor=printInfo[["gfile"]]))
 system.time(resF <- doForeach(varList, sfile="TGforecasts_res_F.rds",
@@ -152,8 +155,8 @@ system.time(resF <- doForeach(varList, sfile="TGforecasts_res_F.rds",
 ## check that we have the same results
 stopifnot(doRes.equal(resM, res),
 	  doRes.equal(resC, res),
-	  if(doSock) doRes.equal(resCP,res) else TRUE,
-	  if(doFork) doRes.equal(resCF,res) else TRUE,
+	  if(useSock) doRes.equal(resCP,res) else TRUE,
+	  if(canFork) doRes.equal(resCF,res) else TRUE,
 	  doRes.equal(resR, res),
 	  doRes.equal(resF, res))
 

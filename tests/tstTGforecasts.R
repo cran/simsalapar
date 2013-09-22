@@ -6,6 +6,7 @@ require(simsalapar)
 ## also  require(fGarch)
 
 (doExtras <- simsalapar:::doExtras())
+(hasRmpi <- require("Rmpi"))
 
 ### Variable list ##############################################################
 
@@ -134,9 +135,11 @@ S.T(resM <- doMclapply    (vList, doOne=doOne, monitor=myMoni))
 S.T(resF <- doForeach     (vList, doOne=doOne, monitor=printInfo[["fileEach"]]))
 ## For this problem, these are much slower on a typical 4-core desktop:
 S.T(resC <- doClusterApply(vList, doOne=doOne, monitor=printInfo[["gfile"]]))
+if(hasRmpi)
 S.T(resR <- doRmpi        (vList, doOne=doOne, monitor=TRUE))
 if(doExtras) {
   print(S.T(resC.<- doClusterApply(vList, doOne=doOne, monitor=myMoni)))
+  if(hasRmpi)
   print(S.T(resR.<- doRmpi	  (vList, doOne=doOne, monitor=myMoni)))
 }
 
@@ -144,10 +147,10 @@ if(doExtras) {
 stopifnot(doRes.equal(resM, res),
 	  doRes.equal(resM, resM.),
 	  doRes.equal(resC, res),
-	  doRes.equal(resR, res),
+          if(hasRmpi) doRes.equal(resR, res) else TRUE,
 	  if(doExtras)
 	  doRes.equal(resC, resC.) &&
-	  doRes.equal(resR, resR.) else TRUE,
+	  (if(hasRmpi) doRes.equal(resR, resR.) else TRUE) else TRUE,
 	  doRes.equal(resF, res))
 
 
