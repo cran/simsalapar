@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
+## Foundation; either version 2 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -330,7 +330,7 @@ doMclapply <-
 ##' @title Function for Iterating Over All Subjobs in Parallel Using clusterApply()
 ##' @param vList list of variable specifications
 ##' @param spec cluster specification (number of workers)
-##' @param type cluster type, see parallel's ?makeCluster (basically snow's makeCluster)
+##' @param type cluster type, see parallel's ?makeCluster
 ##' @param load.balancing logical indicating whether to use clusterApplyLB()
 ##'     instead of clusterApply()
 ##' @param block.size size of blocks of rows in the virtual grid which are computed

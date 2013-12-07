@@ -143,10 +143,15 @@ ftable(n.err/n.sim * 100)
 
 ## Now in parallel: -----------------------------------
 
+## due to 'R CMD check --as-cran' allowing only <= 2 cores
+## note: if doExtras, the check with '--as-cran' fails
+(doExtras <- simsalapar:::doExtras())
+nc <- if(doExtras) detectCores() else min(detectCores(), 2)
+
 do1 <- FALSE  ## too slow: 24-30 seconds (on lynne)
 if(do1)
 (tM1 <- system.time({
-resC <- doMclapply(varList, block.size = 16,
+resC <- doMclapply(varList, cores=nc, block.size = 16,
 		   doOne=do.one, timer=mkTimer(FALSE))
 }))
 
@@ -156,7 +161,7 @@ bl.sizes <- setNames(bl.sizes, paste("bs", bl.sizes, sep="="))
 rrr <- lapply(bl.sizes, function(bl.size) {
     cat("block.size = ", bl.size,"\n")
     st <- system.time(
-        r <- doMclapply(varList, block.size = bl.size,
+        r <- doMclapply(varList, cores=nc, block.size = bl.size,
                         doOne=do.one, timer=mkTimer(FALSE)) )
     list(res = r, sysTime = st)
 })

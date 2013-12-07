@@ -1,0 +1,3 @@
+21:02:53 on sklar: forecaster=   pessimist; value:  num [1:2] 0.792 0.499
+21:02:55 on sklar: forecaster=    optimist; value:  num [1:2] 20.55 4.47
+21:02:55 on sklar: forecaster=statistician; value:  num [1:2] 0.516 0.528

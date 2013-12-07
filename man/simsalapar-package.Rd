@@ -17,7 +17,7 @@
     Depends: \tab R (>= 2.15.2), graphics, parallel, Rmpi\cr
     Imports: \tab utils, grid, methods, xtable, sfsmisc, gridBase (>= 0.4-6),\cr
              \tab foreach, colorspace, doParallel\cr
-    Suggests: \tab grid, Hmisc, copula, doSNOW\cr
+    Suggests: \tab grid, Hmisc, copula\cr
     KeepSource: \tab TRUE\cr
     maybe_OS_type: \tab unix\cr
     License: \tab GPL (>= 3)\cr
