@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
+## Foundation; either version 2 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -40,6 +40,11 @@ tryCatch.W.E <- function(expr){
 ##' { end }
 
 ## Not exported, and only used because CRAN checks must be faster
+## use 'export  R_PKG_CHECKING_doExtras=true' to use doExtras for all packages
+## or  'export R_simsalapar_check_extra=true' for using doExtras only for simsalapar
+## [and unset R_PKG_CHECKING_doExtras etc. to unset]
+## Note: if !doExtras: 'R CMD check simsalapar' and 'R CMD check --as-cran simsalapar'
+##       work; if doExtras, only the former works
 doExtras <- function() {
     interactive() || nzchar(Sys.getenv("R_simsalapar_check_extra")) ||
         identical("true", unname(Sys.getenv("R_PKG_CHECKING_doExtras")))

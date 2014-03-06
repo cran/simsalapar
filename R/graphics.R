@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
-## Foundation; either version 3 of the License, or (at your option) any later
+## Foundation; either version 2 of the License, or (at your option) any later
 ## version.
 ##
 ## This program is distributed in the hope that it will be useful, but WITHOUT
@@ -63,7 +63,7 @@ bgGrob <- function(v, h, default.units="native", name=NULL, gp=gpar(), vp=NULL)
                           default.units=default.units),
              name=name, gp=gp, vp=vp)
 
-##if(getRversion() < "3.1.0") { ## TODO MM: ready to put in 'grid'?
+if(getRversion() < "3.1.0") { ## legendGrob(), grid.legend() are in R 3.1.0
 
 ##' @title Function for constructing a legend grob
 ##' @param labels legend labels (expressions)
@@ -88,7 +88,7 @@ legendGrob <-
              hgap=unit(1, "lines"), vgap=unit(1, "lines"),
              default.units="lines",
              pch, gp=gpar(), vp=NULL)
-    {
+{
         ## type checking on arguments; labels: character, symbol or expression:
         labels <- as.graphicsAnnot(labels)
         labels <- if(is.character(labels)) as.list(labels) else as.expression(labels)
@@ -107,9 +107,9 @@ legendGrob <-
         else if(!miss.nrow &&  miss.ncol) ncol <- ceiling(nkeys / nrow)
         if(nrow < 1) stop("'nrow' must be >= 1")
         if(ncol < 1) stop("'ncol' must be >= 1")
-        if(nrow * ncol < nkeys) stop("nrow * ncol < #{legend labels}") #
-            ## pch, gp
-            if(has.pch <- !missing(pch) && length(pch) > 0) pch <- rep_len(pch, nkeys)
+	if(nrow * ncol < nkeys) stop("nrow * ncol < #{legend labels}")
+	## pch, gp
+	if(has.pch <- !missing(pch) && length(pch) > 0) pch <- rep_len(pch, nkeys)
         if(doGP <- length(nmgp <- names(gp)) > 0) {
             if(has.lty  <-  "lty" %in% nmgp) gp$lty  <- rep_len(gp$lty,  nkeys)
             if(has.lwd  <-  "lwd" %in% nmgp) gp$lwd  <- rep_len(gp$lwd,  nkeys)
@@ -151,11 +151,11 @@ legendGrob <-
                       pointsGrob(0.5, 0.5, default.units="npc", pch = pch[i], gp=gpi))[ord])
             else if(has.pch) pointsGrob(0.5, 0.5, default.units="npc", pch = pch[i], gp=gpi)
             else if(do.lines) linesGrob(0:1, 0.5, gp=gpi)
-            else nullGrob()             # should not happen...
+            else nullGrob() # should not happen...
             fg <- packGrob(fg, plGrob,
                            col = 2*ci-1, row = ri, border = symbol.border,
                            width = u1, height = u1, force.width = TRUE)
-            ## text grob
+            ## text grob: add the labels
             gpi. <- gpi
             gpi.$col <- "black" # maybe needs its own 'gp' in the long run (?)
             fg <- packGrob(fg, textGrob(labels[[i]], x = 0, y = 0.5,
@@ -174,7 +174,7 @@ grid.legend <- function(..., draw=TRUE)
     invisible(g)
 }
 
-##}## if(getRversion() < "3.1.0")...
+}## if(getRversion() < "3.1.0")...
 
 ##' @title Function for constructing a panel function and corresponding legend grob
 ##' @param method panel function method (boxplot, lines, points,...)
@@ -569,7 +569,7 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
     ## additionals #############################################################
 
     ## ylab
-    if(!is.na(ylab)) {
+    if(!identical(ylab, NA)) { # may be language where is.na(.) warns
 	max.row <- if(lv) ny.-2 else ny.-1
 	stopifnot(max.row >= 2) # defensive programming
         ## main

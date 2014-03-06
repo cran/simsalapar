@@ -44,8 +44,8 @@ importFrom("grid"
 	   , grid.rect, grid.text, grid.polyline, grid.points
            , grid.grill
 	   , grid.draw, grid.layout, grid.show.layout)
-## if(getRversion() >= "3.1.0")
-##     importFrom("grid", legendGrob, grid.legend)
+if(getRversion() >= "3.1.0")
+    importFrom("grid", legendGrob, grid.legend)
 
 
 ### Exports ####################################################################

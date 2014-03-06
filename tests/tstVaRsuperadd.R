@@ -5,8 +5,6 @@
 require(simsalapar)
 source(system.file("xtraR/assertErr-etc.R", package="simsalapar", mustWork=TRUE))
 
-(doExtras <- simsalapar:::doExtras())
-
 ## Must be fast, rather than "interesting":
 n.obs  <- 16
 n.alpha <- 8

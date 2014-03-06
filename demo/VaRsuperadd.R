@@ -112,9 +112,13 @@ if(FALSE) {
 ## with doCheck
 doCheck(doOne, varList)
 
+## to be CRAN check compatible
+nc <- if(doExtras) detectCores() else min(detectCores(), 2)
+nc.win <- if(.Platform$OS.type=="windows") 1 else nc # otherwise win-builder fails
+
 ## computation
 system.time(res <-
-            doClusterApply(varList,
+            doClusterApply(varList, spec=nc,
                            sfile = if(n.obs > 1000) "VaR_superadd.rds" else NULL,
                            doOne=doOne, monitor = printInfo[["gfile"]],
                            ## load copula once on each slave, to not affect run time
@@ -124,7 +128,7 @@ system.time(res <-
 if(doExtras) {
     ## doMclapply() ------------------------------------------------------------
     ## "init expression" for mclapply can happen here locally (see above)
-    print(system.time(res2 <- doMclapply(varList, doOne=doOne)))
+    print(system.time(res2 <- doMclapply(varList, cores=nc.win, doOne=doOne)))
     stopifnot( doRes.equal(res, res2) )
 
     ## doRmpi() ----------------------------------------------------------------
@@ -132,7 +136,7 @@ if(doExtras) {
 
     ## doForeach() -------------------------------------------------------------
     print(system.time(res3 <- {
-        doForeach(varList, doOne=doOne, extraPkgs = "copula",
+        doForeach(varList, spec=nc, doOne=doOne, extraPkgs = "copula",
                   timer=mkTimer(gcFirst=TRUE) )
     }))
     stopifnot( doRes.equal(res, res3) )

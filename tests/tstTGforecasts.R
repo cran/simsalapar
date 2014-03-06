@@ -5,7 +5,6 @@
 require(simsalapar)
 ## also  require(fGarch)
 
-(doExtras <- simsalapar:::doExtras())
 (hasRmpi <- require("Rmpi"))
 
 ### Variable list ##############################################################
@@ -129,18 +128,26 @@ myMoni <- function(i.sim, j, pGrid, res4, n.sim) {
 # Trick, so we can use the printInfo utility functions:
 environment(myMoni) <- environment(printInfo[["default"]])
 
-## parallel
-S.T(resM.<- doMclapply    (vList, doOne=doOne, monitor=TRUE))
-S.T(resM <- doMclapply    (vList, doOne=doOne, monitor=myMoni))
-S.T(resF <- doForeach     (vList, doOne=doOne, monitor=printInfo[["fileEach"]]))
+
+## in parallel
+
+## due to 'R CMD check --as-cran' allowing only <= 2 cores
+## note: if doExtras, the check with '--as-cran' fails
+(doExtras <- simsalapar:::doExtras())
+(nc <- if(doExtras) detectCores() else min(detectCores(), 2))
+(nc.win <- if(.Platform$OS.type=="windows") 1 else nc) # otherwise win-builder fails
+
+S.T(resM.<- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=TRUE))
+S.T(resM <- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=myMoni))
+S.T(resF <- doForeach     (vList, spec   =nc,     doOne=doOne, monitor=printInfo[["fileEach"]]))
 ## For this problem, these are much slower on a typical 4-core desktop:
-S.T(resC <- doClusterApply(vList, doOne=doOne, monitor=printInfo[["gfile"]]))
+S.T(resC <- doClusterApply(vList, spec   =nc, doOne=doOne, monitor=printInfo[["gfile"]]))
 if(hasRmpi)
-S.T(resR <- doRmpi        (vList, doOne=doOne, monitor=TRUE))
-if(doExtras) {
-  print(S.T(resC.<- doClusterApply(vList, doOne=doOne, monitor=myMoni)))
+S.T(resR <- doRmpi        (vList, nslaves=nc, doOne=doOne, monitor=TRUE))
+if(doExtras) { # use all available cores
+  print(S.T(resC.<- doClusterApply(vList, spec=nc,    doOne=doOne, monitor=myMoni)))
   if(hasRmpi)
-  print(S.T(resR.<- doRmpi	  (vList, doOne=doOne, monitor=myMoni)))
+  print(S.T(resR.<- doRmpi	  (vList, nslaves=nc, doOne=doOne, monitor=myMoni)))
 }
 
 ## check that we have the same results
