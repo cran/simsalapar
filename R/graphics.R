@@ -251,7 +251,7 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
                     axlabspc = c(0.12, 0.08), labspc = c(0.04, 0.04),
                     n.sim.spc = 0.06,
                     auxcol = c("gray40", "gray78", "gray90", "white"),
-		    pcol = c("blue", "red", "orange"), grid.lwd=1.6, ax.lwd=2,
+		    pcol = c("black", "blue", "red", "orange"), grid.lwd=1.6, ax.lwd=2,
 		    tx.cex = 1.2, leg.cex = 1, xlab = NULL, ylab = NA,
                     do.n.sim = has.n.sim,
 		    verbose = getOption("verbose"), show.layout = verbose, ...)

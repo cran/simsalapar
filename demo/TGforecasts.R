@@ -141,10 +141,12 @@ system.time(resM <- doMclapply(varList, sfile="TGforecasts_res_M.rds",
 system.time(resC <- doClusterApply(varList, sfile="TGforecasts_res_C.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
 if(useSock)
-system.time(resCP<- doClusterApply(varList, type="PSOCK", sfile="TGforecasts_res_CP.rds",
+system.time(resCP<- doClusterApply(varList, cluster=makeCluster(detectCores(),
+                                   type="PSOCK"), sfile="TGforecasts_res_CP.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
 if(canFork)
-system.time(resCF<- doClusterApply(varList, type="FORK", sfile="TGforecasts_res_CF.rds",
+system.time(resCF<- doClusterApply(varList, cluster=makeCluster(detectCores(),
+                                   type="FORK"), sfile="TGforecasts_res_CF.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
 if(hasRmpi)
 system.time(resR <- doRmpi(varList, sfile="TGforecasts_res_R.rds",

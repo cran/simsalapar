@@ -10,9 +10,9 @@ n.obs  <- 16
 n.alpha <- 8
 doExtras <- FALSE
 
-demo(VaRsuperadd)
+demo(VaRsuperadd) # crucial part!
 
-## The only difference to doOne() is the missing  t(.) at the very end
+## The only difference to doOne() is the missing t(.) at the very end
 do1.wrong <- function(n, d, family, tau, qmargin, alpha)
 {
     cop <- switch(family,

@@ -71,7 +71,7 @@ S3method(print, varlist)
 export(expr2latex, escapeLatex)
 
 ## simulation analysis: for producing tables
-export(wrapLaTable, tablines)
+export(wrapLaTable, tablines, cattablines)
 S3method(toLatex, varlist)
 S3method(toLatex, ftable)
 if(getRversion() <= "3.0.1") { ## ftable(<array>, dimnames=list(A=NULL,..))

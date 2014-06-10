@@ -38,12 +38,17 @@ printInfo # or
     \describe{
       \item{\code{\link{NULL}}}{\code{\link{.Random.seed}} remains
 	untouched. If it does not exist, generate it by calling
-	\code{runif(1)}. This case typically leads to non-reproducible results.}
-      \item{\code{\link{numeric}(n.sim)}}{seeds (numbers) for each of
-	the \code{n.sim} simulation replications (same seed for each row
-	in the (physical) grid). This case leads to reproducible results.}
-      \item{\code{\link{vector}("list", n.sim)}}{seeds (tyically vectors
-	of numbers) for each of the \code{n.sim} simulation replications
+	\code{runif(1)}. This case typically leads to non-reproducible
+	results.}
+      \item{\code{\link{numeric}(n.sim)}}{a \code{\link{numeric}} vector
+	of length \code{n.sim} containing the seed for each simulation
+	replications (same seed for each row
+	in the (physical) grid; this ensures least variance across
+	computations for the same replication).
+	This case leads to reproducible results.}
+      \item{\code{\link{vector}("list", n.sim)}}{a \code{\link{list}} of
+	length \code{n.sim} containing seeds (tyically numeric vectors)
+	for each of the \code{n.sim} simulation replications
 	(same seed for each row in the (physical) grid). The seeds are
 	assigned to \code{\link{.Random.seed}} in
 	\code{\link{globalenv}()} and can thus be used for other random
@@ -52,7 +57,9 @@ printInfo # or
       \item{\code{\link{NA}}}{\code{\link{.Random.seed}} remains
 	untouched. If it does not exist, so be it. No fifth component is
 	concatenated to the result of the \code{doOne()} call in this
-	(and only this) case. It typically leads to non-reproducible results.}
+	case (in all other case, it is appended if
+	\code{keepSeed=TRUE}). This method typically leads to
+	non-reproducible results.}
       \item{\code{\link{character}} string}{a character string
 	specifying a seeding method. Currently only \code{"seq"} in
 	which case the seeds 1 to \code{n.sim} for the \code{n.sim}
@@ -90,11 +97,18 @@ printInfo # or
 \details{
   See the vignette or references in \code{\link{simsalapar-package}} for
   how to use these functions.
-}
+
+  The case where \code{seed} is a \code{\link{numeric}} vector of length
+  \code{n.sim} also leads to the same results no matter which variables
+  are of type ``grid'' or ``inner''; see \code{demo(robust.mean)} where
+  this is tested. This is important to guarantee since one might want to
+  change certain ``inner'' variables to ``grid'' variables due to
+  load-balancing while computing the desired statistics based on the
+  same seed (or generated data from this seed).}
 \author{Marius Hofert and Martin Maechler.}
 \seealso{
-  \code{\link{doCallWE}()}; \code{\link{.Random.seed}} for information
-  about random number generators and seeds.
+  \code{\link{doCallWE}()}; \code{\link{.Random.seed}} for
+  information about random number generators and seeds.
 
   For examples of \emph{implicit} use of \code{subjob}, see
   \code{\link{doLapply}}.

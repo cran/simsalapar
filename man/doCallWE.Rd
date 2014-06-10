@@ -33,19 +33,20 @@ mkTimer(gcFirst)
 \value{
   \code{doCallWE()} returns a \code{\link{list}} with components
   \item{value}{\code{f}\eqn{(\langle \mathtt{argl} \rangle)}{(<argl>)},
-    if there was no error, or \code{\link{NULL}} otherwise.}
+    if there was no error, \code{\link{NULL}} otherwise.}
   \item{error}{error message (see \code{\link{simpleError}} or
-    \code{\link{stop}()}) or \code{\link{NULL}}.}
+    \code{\link{stop}()}), \code{\link{NULL}} otherwise.}
   \item{warning}{warning message (see \code{\link{simpleWarning}} or
-    \code{\link{warning}()}) or \code{\link{NULL}}.}
-  \item{time}{time, as measured by \code{timer()}.}
+    \code{\link{warning}()}), \code{\link{NULL}} otherwise.}
+  \item{time}{time, as measured by \code{timer()}; defaults to
+    milliseconds without garbage collection.}
 }
 \details{
   Note that \code{gcFirst=FALSE} is default for a good reason: if a call
   to \code{doOne()} is relatively fast, calling \code{\link{gc}()} every
   time is unnecessarily expensive and may completely dominate the
-  overall simulation run time.
-  \code{gcFirst=TRUE} is preferable otherwise, as it ensures less
+  overall simulation run time. For serious run time measurement,
+  \code{gcFirst=TRUE} is preferable, as it ensures less
   variable timings, see \code{\link{system.time}}.
 }
 \author{Marius Hofert and Martin Maechler.}

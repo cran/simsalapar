@@ -96,7 +96,7 @@ g12 <- doLapply(v.12, monitor=TRUE, doOne=do.1, timer=mkTimer(gcFirst=TRUE))
 )
 stopifnot(all.equal(      getArray(g12),
                     aperm(getArray(r12), c(2:1,3)),
-                    check.attr=FALSE))## <- buglet in R: aperm(a) loses names(dim(a))
+		    check.attributes=FALSE))## <- buglet in R: aperm(a) loses names(dim(a))
 
 
 (tL <- system.time({

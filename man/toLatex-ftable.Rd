@@ -4,6 +4,7 @@
 \alias{toLatex.varlist}
 \alias{fftable}
 \alias{tablines}
+\alias{cattablines}
 \description{
   The \code{\link{ftable}} method of \code{\link{toLatex}()} converts
   an \code{ftable} to a LaTeX table via \code{tablines()}.
@@ -17,6 +18,9 @@
   \code{tablines()} computes ingredients for converting a
   \code{\link{character}} \code{\link{matrix}} with attributes to a
   LaTeX table.
+
+  \code{cattablines()} is a small auxiliary function which creates rows
+  of a LaTeX table from a given matrix.
 }
 \usage{
 \S3method{toLatex}{ftable}(object, vList = NULL,
@@ -40,6 +44,8 @@ fftable(x, lsep = " | ", quote = FALSE, method = "compact", ...)
 tablines(x, align = NULL, booktabs = TRUE, head = NULL,
 	 rsep = "\\\\\\\\", sp = if(booktabs) 3 else 1.25, rsep.sp = NULL,
 	 csep = " & ", quote = FALSE)
+
+cattablines(x, rsep = "\\\\\\\\", csep = " & ", include.rownames = TRUE)
 }
 \arguments{
   \item{object}{an \code{\link{ftable}} to be converted to a LaTeX
@@ -47,7 +53,9 @@ tablines(x, align = NULL, booktabs = TRUE, head = NULL,
   \item{x}{for \code{fftable()} a \code{\link{character}} \code{\link{matrix}};
     for \code{tablines()} a \code{\link{character}} \code{\link{matrix}} with
     attributes \code{nrv} and \code{ncv} (as returned by \code{fftable()})
-    giving the number of row and column variables, respectively.}
+    giving the number of row and column variables, respectively; for
+    \code{cattablines()} a \code{\link{numeric}} or
+    \code{\link{character}} \code{\link{matrix}}.}
   \item{vList}{a variable specification list see \code{\link{varlist}}.}
   \item{x.escape}{logical indicating if the \dQuote{body} entries of the
     table should be escaped by \code{espaceFUN()}; if false, as by
@@ -98,6 +106,8 @@ tablines(x, align = NULL, booktabs = TRUE, head = NULL,
     containing the table caption or \code{\link{NULL}} for no caption.}
   \item{label}{(if \code{do.table}:) \code{\link{character}} string
     containing the table label or \code{\link{NULL}} for no label.}
+  \item{include.rownames}{\code{\link{logical}} indicating whether row
+    names are included in the first column.}
   \item{\dots}{additional arguments passed to \code{\link{format.ftable}()}.}
 }
 \value{
@@ -119,6 +129,9 @@ tablines(x, align = NULL, booktabs = TRUE, head = NULL,
     \item{align}{alignment string.}
     \item{rsepcol}{\code{\link{character}} \code{\link{vector}}
       containing the row separators (last entries of each row).}
+
+  \code{cattablines()} outputs the formatted lines for copy-and-paste
+  into a LaTeX table.
 }
 \author{Marius Hofert and Martin Maechler.}
 \references{see \code{\link{simsalapar-package}}.}
@@ -148,5 +161,13 @@ toLatex(ft4)
 toLatex(ft5, booktabs=FALSE)
 toLatex(ft5, method="col.compact")
 toLatex(ft5)
+
+## ``poor-man's approach'' for creating lines of a LaTeX table
+set.seed(271)
+tab <- matrix(runif(6), ncol=3)
+ftab <- formatC(tab, digits=4, format="f")
+cattablines(ftab)
+rownames(ftab) <- LETTERS[1:nrow(ftab)]
+cattablines(ftab)
 }
 \keyword{utilities}

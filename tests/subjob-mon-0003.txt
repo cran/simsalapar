@@ -1,1 +1,0 @@
-21:02:35 on sklar: forecaster=   pessimist; value:  num [1:2] 0.792 0.499

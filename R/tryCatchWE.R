@@ -39,13 +39,26 @@ tryCatch.W.E <- function(expr){
 }
 ##' { end }
 
-## Not exported, and only used because CRAN checks must be faster
+## Not exported, and only used because CRAN checks must be faster and not use > 2 cores.
 ## use 'export  R_PKG_CHECKING_doExtras=true' to use doExtras for all packages
 ## or  'export R_simsalapar_check_extra=true' for using doExtras only for simsalapar
 ## [and unset R_PKG_CHECKING_doExtras etc. to unset]
+doXchecks <- function() nzchar(Sys.getenv("R_simsalapar_check_extra")) ||
+    identical("true", unname(Sys.getenv("R_PKG_CHECKING_doExtras"))) # any have to be set by hand (not existing)
 ## Note: if !doExtras: 'R CMD check simsalapar' and 'R CMD check --as-cran simsalapar'
 ##       work; if doExtras, only the former works
-doExtras <- function() {
-    interactive() || nzchar(Sys.getenv("R_simsalapar_check_extra")) ||
-        identical("true", unname(Sys.getenv("R_PKG_CHECKING_doExtras")))
+doExtras <- function() interactive() || doXchecks()
+
+## CRAN request: want to *interactively* debug our package on CRAN machine
+## ---- and *never* use > 2 cores ==> cannot use doExtras() for core detection
+.parallel.chk.users <- c("hofert", "mhofert", "maechler")
+nCores4test <- function() {
+    dc <- detectCores()
+    if(doXchecks() || ## a "use-all-cores" person who has not set R_PKG_AS_CRAN:
+       (is.na(Sys.getenv("R_PKG_AS_CRAN", unset=NA)) && ## 'R_PKG_AS_CRAN' from Martin's script
+	Sys.info()[["user"]] %in% .parallel.chk.users))
+
+	dc
+    else
+	min(2L, dc)
 }

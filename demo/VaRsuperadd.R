@@ -8,7 +8,7 @@
 
 ### 0) Setup ###################################################################
 
-usr <- Sys.getenv("USER")
+usr <- Sys.info()[["user"]] # better portability than  Sys.getenv("USER")
 if(exists("n.obs")   && is.numeric(n.obs) &&
    exists("n.alpha") && is.numeric(n.alpha)) {
     cat(">>> Using n.obs=", n.obs, ", n.alpha=", n.alpha, " <<<\n", sep="")
@@ -117,11 +117,12 @@ nc <- if(doExtras) detectCores() else min(detectCores(), 2)
 nc.win <- if(.Platform$OS.type=="windows") 1 else nc # otherwise win-builder fails
 
 ## computation
+type <- if(.Platform$OS.type == "windows") "PSOCK" else "MPI"
 system.time(res <-
-            doClusterApply(varList, spec=nc,
+            doClusterApply(varList, cluster=makeCluster(nc, type=type),
                            sfile = if(n.obs > 1000) "VaR_superadd.rds" else NULL,
                            doOne=doOne, monitor = printInfo[["gfile"]],
-                           ## load copula once on each slave, to not affect run time
+                           ## load copula once on each worker, to not affect run time
                            initExpr = require("copula"),
                            timer=mkTimer(gcFirst=TRUE) ))
 
@@ -135,8 +136,10 @@ if(doExtras) {
     ## => passing an init expression does not (easily) work
 
     ## doForeach() -------------------------------------------------------------
+    type <- if(.Platform$OS.type == "windows") "PSOCK" else "MPI"
     print(system.time(res3 <- {
-        doForeach(varList, spec=nc, doOne=doOne, extraPkgs = "copula",
+        doForeach(varList, cluster=makeCluster(nc, type=type),
+                  doOne=doOne, extraPkgs = "copula",
                   timer=mkTimer(gcFirst=TRUE) )
     }))
     stopifnot( doRes.equal(res, res3) )

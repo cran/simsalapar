@@ -14,6 +14,10 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 
+### 'poor-man's approach' how to create lines for a LaTeX table
+
+
+
 ## This is a *fixed* version from R ./src/library/stats/R/ftable.R (R-3.0.0; 2013-03-05)
 ## Meant to be for all those who don't have R-3.0.0
 ## Note: this can be deprecated after a while
@@ -119,6 +123,24 @@ fftable <- function(x, lsep = " | ", quote = FALSE, method = "compact", ...)
               ##    issues such as introducing cmidrules of length 1 as the
               ##    head is then one line longer...
 	      nrv = length(attr(x, "row.vars")))
+}
+
+##' @title Create and cat rows of a LaTeX table from a given matrix
+##' @param x character or numeric matrix
+##' @param rsep character string inserted at the end of each row
+##' @param csep character string for separating different cells in a row
+##' @param include.rownames logical indicating whether row names are included
+##'        in the first column
+##' @return nothing; LaTeX table rows are cat'ed
+##' @author Marius Hofert
+cattablines <- function(x, rsep = "\\\\", csep = " & ", include.rownames = TRUE) {
+    stopifnot(is.matrix(x))
+    n <- nrow(x); d <- ncol(x)
+    if(include.rownames) {
+        x <- cbind(rownames(x), x)
+        rownames(x) <- NULL
+    }
+    cat(paste0(apply(x, 1, function(row) paste0(row, collapse=csep)), rsep), sep="\n") # table content
 }
 
 ##' @title Ingredients for Converting an ftable to a LaTeX Table

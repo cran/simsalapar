@@ -15,7 +15,7 @@ mayplot(x, vList, row.vars, col.vars, xvar,
        spc = c(0.04/max(1,n.x-1), 0.04/max(1,n.y-1)),
        axlabspc=c(0.12, 0.08), labspc=c(0.04, 0.04),
        n.sim.spc = 0.06, auxcol = c("gray40", "gray78", "gray90", "white"),
-       pcol = c("blue", "red", "orange"), grid.lwd = 1.6, ax.lwd = 2,
+       pcol = c("black", "blue", "red", "orange"), grid.lwd = 1.6, ax.lwd = 2,
        tx.cex = 1.2, leg.cex = 1, xlab = NULL, ylab = NA,
        do.n.sim = has.n.sim,
        verbose = getOption("verbose"), show.layout = verbose, \dots)
@@ -78,8 +78,8 @@ mayplot(x, vList, row.vars, col.vars, xvar,
       \item background color for the plots
       \item color of grid lines
     }}
-  \item{pcol}{plot base colors (colors are then determined via
-    \code{\link{colorRampPalette}()}).}
+  \item{pcol}{plot base colors. If more colors than the provided ones
+    are required, \code{\link{colorRampPalette}()} is used.}
 
   \item{grid.lwd}{lwd for grid}
   \item{ax.lwd}{lwd for axes}
