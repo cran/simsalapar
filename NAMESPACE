@@ -18,7 +18,10 @@
 
 importFrom("methods", coerce, setAs, setClass, getDataPart)
 importFrom("parallel", detectCores, makeCluster, stopCluster, clusterExport,
-           mclapply, clusterApply, nextRNGStream)
+	   mclapply,
+	   clusterApply, clusterApplyLB, clusterCall,
+	   nextRNGStream)
+
 importFrom("utils", toLatex)
 
 ## only used in doRmpi():

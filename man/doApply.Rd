@@ -24,13 +24,12 @@
 doLapply(vList, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, ...)
-doForeach(vList, cluster=makeCluster(detectCores(),
-       type=if(.Platform$OS.type == "windows") "PSOCK" else "MPI"),
-       cores=NULL, block.size = 1, seed="seq", repFirst=TRUE, sfile=NULL,
-       check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
+doForeach(vList, cluster=makeCluster(detectCores(), type="PSOCK"),
+       cores=NULL, block.size = 1, seed="seq", repFirst=TRUE,
+       sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, extraPkgs=character(), exports=character(), ...)
 doRmpi(vList,
-       nslaves = if((sz <- mpi.universe.size()) <= 1) detectCores() else sz,
+       nslaves = if((sz <- Rmpi::mpi.universe.size()) <= 1) detectCores() else sz,
        load.balancing=TRUE, block.size = 1, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, exports=character(), ...)
@@ -38,8 +37,7 @@ doMclapply(vList, cores = if(.Platform$OS.type == "windows") 1 else detectCores(
        load.balancing=TRUE, block.size = 1, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, ...)
-doClusterApply(vList, cluster=makeCluster(detectCores(),
-       type=if(.Platform$OS.type == "windows") "PSOCK" else "MPI"),
+doClusterApply(vList, cluster=makeCluster(detectCores(), type="PSOCK"),
        load.balancing=TRUE, block.size = 1, seed="seq", repFirst=TRUE,
        sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
        doOne, initExpr, exports=character(), ...)
@@ -105,8 +103,8 @@ doRes.equal(x, y, tol = 1e-15, ...)
   See the vignette or references in \code{\link{simsalapar-package}} for
   how to use these functions.
 
-  For reasons why we choose \code{"MPI"} as default for \code{cluster}
-  if not on Windows, see the discussion starting at
+  For reasons to choose \code{"MPI"} as cluster type (if not on Windows),
+  see the discussion starting at
   \url{https://stat.ethz.ch/pipermail/r-sig-hpc/2013-April/001647.html}.
 
   For \code{\link{doForeach}()}, precisely one of \code{cluster} or

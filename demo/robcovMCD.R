@@ -26,7 +26,7 @@ varList <- varlist(n.sim = list(type="N", expr = quote(N[sim]), value = 1000),
 				value = 1/2 + (0:8)/16)
 		   )
 
-if(interactive()) { ## i.e., when run as a demo, need much smaller sizes
+if(interactive() || exists(".checking")) { ## i.e., when run as a demo, need much smaller sizes
     message("Redimensioning the variable list in order to finish  ``in time'' ..")
     varList.full <- varList
     varList <- set.n.sim(varList, 512)
@@ -98,7 +98,7 @@ mayplot(v.sml, vl.sml, row.vars = "p", col.vars = "alpha", xvar = "n")
 
 ## now the "big" simulation:
 system.time({
-res <- doForeach(varList, block.size = 50,
+res <- doForeach(varList, block.size = 64,
                  seed = "seq", #-> no 'seed' needed
                  subjob. = subjob, doOne=do1mcd, timer=mkTimer(FALSE))
 })

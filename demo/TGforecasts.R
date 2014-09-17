@@ -132,6 +132,7 @@ system.time(res <- doLapply(varList, #sfile="TGforecasts_res_l.rds",
 			    doOne=doOne, monitor=TRUE))
 
 ## parallel
+require(parallel) # e.g. for  makeCluster() below:
 canFork <- (.Platform$OS.type != "windows")
 (hasRmpi <- require("Rmpi"))# not on Windows
 

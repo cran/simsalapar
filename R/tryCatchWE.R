@@ -53,7 +53,10 @@ doExtras <- function() interactive() || doXchecks()
 ## ---- and *never* use > 2 cores ==> cannot use doExtras() for core detection
 .parallel.chk.users <- c("hofert", "mhofert", "maechler")
 nCores4test <- function() {
+    ## Maybe use in the future (R > 3.1.1) ..
+    ## dc <- suppressWarnings(detectCores(all.tests = TRUE)) ## all tests -> system() warnings
     dc <- detectCores()
+    if(length(dc) != 1 || !is.finite(dc)) dc <- 1L
     if(doXchecks() || ## a "use-all-cores" person who has not set R_PKG_AS_CRAN:
        (is.na(Sys.getenv("R_PKG_AS_CRAN", unset=NA)) && ## 'R_PKG_AS_CRAN' from Martin's script
 	Sys.info()[["user"]] %in% .parallel.chk.users))

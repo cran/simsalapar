@@ -144,9 +144,7 @@ ftable(n.err/n.sim * 100)
 ## Now in parallel: -----------------------------------
 
 ## due to 'R CMD check --as-cran' allowing only <= 2 cores
-## note: if doExtras, the check with '--as-cran' fails
-(doExtras <- simsalapar:::doExtras())
-nc <- if(doExtras) detectCores() else min(detectCores(), 2)
+(nc <- simsalapar:::nCores4test()) # full cores for .parallel.chk.users or via env.var
 
 do1 <- FALSE  ## too slow: 24-30 seconds (on lynne)
 if(do1)

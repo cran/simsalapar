@@ -90,8 +90,7 @@ doLapply <- function(vList, seed="seq", repFirst=TRUE, sfile=NULL,
 ##'         although https://mailman.stat.ethz.ch/pipermail/r-sig-hpc/2013-April/001652.html
 ##' { doForeach }
 doForeach <-
-    function(vList, cluster=makeCluster(detectCores(),
-             type=if(.Platform$OS.type == "windows") "PSOCK" else "MPI"),
+    function(vList, cluster=makeCluster(detectCores(), type="PSOCK"),
              cores=NULL, block.size=1,
              seed="seq", repFirst=TRUE,
              sfile=NULL, check=TRUE, doAL=TRUE,
@@ -100,7 +99,13 @@ doForeach <-
 {
     ## Unfortunately, imports() ends not finding 'iter' from pkg "iterators":
     ## --> rather strictly require things here:
-    stopifnot(require("foreach"), require("doParallel"))
+    getPkg <- function(pkg)
+	if(!require(pkg, character.only=TRUE))
+	    stop(sprintf("You must install the CRAN package '%s' before you can use doForeach()",
+			 pkg), call. = FALSE)
+    getPkg("foreach")
+    getPkg("doParallel")
+
     if((is.null(cluster) && is.null(cores)) || (!is.null(cluster) && !is.null(cores)))
         stop("Precisely one of 'cluster' or 'cores' has to be not NULL")
     if(!is.null(r <- maybeRead(sfile))) return(r)
@@ -122,7 +127,8 @@ doForeach <-
     ngr <- nrow(pGrid)
     ng <- get.nonGrids(vList) # => n.sim >= 1
     n.sim <- ng$n.sim
-    stopifnot(1 <= block.size, block.size <= n.sim, n.sim %% block.size == 0)
+    stopifnot(1 <= block.size, block.size <= n.sim)
+    if(n.sim %% block.size != 0) stop("block.size has to divide n.sim")
 
     ## Two main cases for parallel computing
     if(!is.null(cores)) { # multiple cores
@@ -134,7 +140,7 @@ doForeach <-
 
     ## actual work
     n.block <- n.sim %/% block.size
-    i <- NULL ## <- dirty but required for R CMD check ...
+    i <- NULL ## <- required for R CMD check ...
     res <- ul(foreach(i=seq_len(ngr * n.block),
                       .packages=c("simsalapar", extraPkgs),
                       .export=c(".Random.seed", "iter", "mkTimer", exports)) %dopar%
@@ -148,6 +154,17 @@ doForeach <-
     saveSim(res, vList, repFirst=repFirst, sfile=sfile, check=check, doAL=doAL)
 }
 ##' { end } doForeach
+##
+## Because we must use foreach and doParallel packages via require() instead of importing,
+## {trying the requireNamespace() + <pkg>::<obj> fails with Error
+##   unable to find variable "iter"
+##   Calls: S.T ... doForeach -> ul -> unlist -> %dopar% -> <Anonymous>
+## }
+## CRAN checks now (>= 3.2.0) need this -- unfortunately:
+utils::globalVariables(c("registerDoParallel", "getDoParWorkers",
+                         "%dopar%", "foreach"))
+
+
 
 ##' @title Function for Iterating Over All Subjobs in Parallel Using Rmpi
 ##' @param vList list of variable specifications
@@ -194,13 +211,14 @@ doForeach <-
 ##' Note: spawning more workers than available may lead to errors (MH)
 ##' { doRmpi }
 doRmpi <- function(vList,
-                   nslaves = if((sz <- mpi.universe.size()) <= 1) detectCores()
+                   nslaves = if((sz <- Rmpi::mpi.universe.size()) <= 1) detectCores()
                              else sz,
                    load.balancing=TRUE, block.size=1, seed="seq", repFirst=TRUE,
                    sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
                    doOne, exports=character(), ...)
 {
-    if(!require("Rmpi"))
+    ## see http://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Suggested-packages
+    if(!requireNamespace("Rmpi", quietly=TRUE))
         stop("You must install the CRAN package 'Rmpi' before you can use doRmpi()")
 
     if(!is.null(r <- maybeRead(sfile))) return(r)
@@ -221,20 +239,21 @@ doRmpi <- function(vList,
     ngr <- nrow(pGrid)
     ng <- get.nonGrids(vList) # => n.sim >= 1
     n.sim <- ng$n.sim
-    stopifnot(1 <= block.size, block.size <= n.sim, n.sim %% block.size == 0)
+    stopifnot(1 <= block.size, block.size <= n.sim)
+    if(n.sim %% block.size != 0) stop("block.size has to divide n.sim")
 
     ## use as many workers as available
     ## Note: mpi.comm.size(comm) returns the total number of members in a comm
     comm <- 1  ## communicator number
-    if (!mpi.comm.size(comm)) ## <==> no workers are running
-        mpi.spawn.Rslaves(nslaves=nslaves)
+    if (!Rmpi::mpi.comm.size(comm)) ## <==> no workers are running
+        Rmpi::mpi.spawn.Rslaves(nslaves=nslaves)
     ## quiet = TRUE would omit successfully spawned workers
-    on.exit(mpi.close.Rslaves()) # close workers spawned by mpi.spawn.Rslaves()
+    on.exit(Rmpi::mpi.close.Rslaves()) # close workers spawned by mpi.spawn.Rslaves()
     ## pass global required objects to cluster (required by mpi.apply())
-    mpi.bcast.Robj2slave(.Random.seed)
-    mpi.bcast.Robj2slave(mkTimer)
+    Rmpi::mpi.bcast.Robj2slave(.Random.seed)
+    Rmpi::mpi.bcast.Robj2slave(mkTimer)
     for(e in exports) {
-        ee <- substitute(mpi.bcast.Robj2slave(EXP), list(EXP = as.symbol(e)))
+        ee <- substitute(Rmpi::mpi.bcast.Robj2slave(EXP), list(EXP = as.symbol(e)))
         eval(ee)
     }
 
@@ -243,7 +262,7 @@ doRmpi <- function(vList,
 
     ## actual work
     n.block <- n.sim %/% block.size
-    res <- ul((if(load.balancing) mpi.applyLB else mpi.apply)(
+    res <- ul((if(load.balancing) Rmpi::mpi.applyLB else Rmpi::mpi.apply)(
         seq_len(ngr * n.block), function(i)
         lapply(seq_len(block.size), function(k)
             subjob.((i-1)*block.size+k, pGrid=pGrid,
@@ -254,6 +273,7 @@ doRmpi <- function(vList,
     saveSim(res, vList, repFirst=repFirst, sfile=sfile, check=check, doAL=doAL)
 }
 ##' { end } doRmpi
+
 
 ##' @title Function for Iterating Over All Subjobs in Parallel Using mclapply()
 ##' @param vList list of variable specifications
@@ -296,7 +316,8 @@ doMclapply <-
     ngr <- nrow(pGrid)
     ng <- get.nonGrids(vList) # => n.sim >= 1
     n.sim <- ng$n.sim
-    stopifnot(1 <= block.size, block.size <= n.sim, n.sim %% block.size == 0)
+    stopifnot(1 <= block.size, block.size <= n.sim)
+    if(n.sim %% block.size != 0) stop("block.size has to divide n.sim")
 
     ## monitor checks
     if(!(is.logical(monitor) || is.function(monitor)))
@@ -345,8 +366,7 @@ doMclapply <-
 ##'         although https://mailman.stat.ethz.ch/pipermail/r-sig-hpc/2013-April/001652.html
 ##' { doClusterApply }
 doClusterApply <-
-    function(vList, cluster=makeCluster(detectCores(),
-             type=if(.Platform$OS.type == "windows") "PSOCK" else "MPI"),
+    function(vList, cluster=makeCluster(detectCores(), type="PSOCK"),
              load.balancing=TRUE, block.size=1, seed="seq", repFirst=TRUE,
              sfile=NULL, check=TRUE, doAL=TRUE, subjob.=subjob, monitor=FALSE,
              doOne, initExpr, exports=character(), ...)
@@ -365,7 +385,8 @@ doClusterApply <-
     ngr <- nrow(pGrid)
     ng <- get.nonGrids(vList) # => n.sim >= 1
     n.sim <- ng$n.sim
-    stopifnot(1 <= block.size, block.size <= n.sim, n.sim %% block.size == 0)
+    stopifnot(1 <= block.size, block.size <= n.sim)
+    if(n.sim %% block.size != 0) stop("block.size has to divide n.sim")
 
     ## monitor checks
     if(!(is.logical(monitor) || is.function(monitor)))

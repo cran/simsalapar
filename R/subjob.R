@@ -203,7 +203,14 @@ doCheck <- function(doOne, vList, nChks = ng, verbose=TRUE)
 	if(!identical(nmOne, "..."))# fix order for doOne()
 	    args <- args[match(names(args), nmOne)]
 
-	r <- do.call(doOne, args)
+        r <- doCallWE(doOne, args)
+        if(is.null(r$error))
+            r <- r$value
+	else {
+	    message("sample ", j," gave error (that we caught): ",
+		    r$error$message)
+	    next # j in for()
+	}
 	dr <- dim(r)
 	if(verbose) {
 	    cat(" -> length(r) = ",length(r)," dim(r):"); print(dr)

@@ -137,18 +137,20 @@ environment(myMoni) <- environment(printInfo[["default"]])
 (nc <- simsalapar:::nCores4test())
 (nc.win <- if(.Platform$OS.type=="windows") 1 else nc) # otherwise win-builder fails
 
+## if simsalapar no longer *depends* on parallel:
+makeCluster <- parallel::makeCluster
+
 S.T(resM.<- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=TRUE))
 S.T(resM <- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=myMoni))
-type <- if(.Platform$OS.type == "windows") "PSOCK" else "MPI"
-S.T(resF <- doForeach     (vList, cluster=makeCluster(nc, type=type),
+S.T(resF <- doForeach     (vList, cluster=makeCluster(nc, type="PSOCK"),
                            doOne=doOne, monitor=printInfo[["fileEach"]]))
 ## For this problem, these are much slower on a typical 4-core desktop:
-S.T(resC <- doClusterApply(vList, cluster=makeCluster(nc, type=type),
+S.T(resC <- doClusterApply(vList, cluster=makeCluster(nc, type="PSOCK"),
                            doOne=doOne, monitor=printInfo[["gfile"]]))
 if(hasRmpi)
 S.T(resR <- doRmpi        (vList, nslaves=nc, doOne=doOne, monitor=TRUE))
 if(doExtras) { # use all available cores
-  print(S.T(resC.<- doClusterApply(vList, cluster=makeCluster(nc, type=type),
+  print(S.T(resC.<- doClusterApply(vList, cluster=makeCluster(nc, type="PSOCK"),
                                    doOne=doOne, monitor=myMoni)))
   if(hasRmpi)
   print(S.T(resR.<- doRmpi	  (vList, nslaves=nc, doOne=doOne, monitor=myMoni)))
@@ -192,3 +194,11 @@ tab0 <- t(sapply(res0, `[[`, "value")) # values for the 3 forecasters: statistic
 dimnames(tab0)[[1]] <- c("statistician", "optimist", "pessimist")
 names(dimnames(tab0)) <- c("forecaster", "scoringfun")
 stopifnot(identical(tab0, tab1)) # check
+
+
+### Testing other demo()s  etc
+
+if(doExtras) {
+    .checking <- TRUE # to run a smaller demo:
+    demo(robcovMCD)
+}

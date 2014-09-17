@@ -112,14 +112,16 @@ if(FALSE) {
 ## with doCheck
 doCheck(doOne, varList)
 
-## to be CRAN check compatible
-nc <- if(doExtras) detectCores() else min(detectCores(), 2)
+## if simsalapar no longer *depends* on parallel:
+makeCluster <- parallel::makeCluster
+## to be CRAN check compatible and as called from tests with explicit doExtras <- FALSE:
+nc <- simsalapar:::nCores4test(); nc <- if(doExtras) nc else min(nc, 2)
+nc
 nc.win <- if(.Platform$OS.type=="windows") 1 else nc # otherwise win-builder fails
 
 ## computation
-type <- if(.Platform$OS.type == "windows") "PSOCK" else "MPI"
 system.time(res <-
-            doClusterApply(varList, cluster=makeCluster(nc, type=type),
+            doClusterApply(varList, cluster=makeCluster(nc, type="PSOCK"),
                            sfile = if(n.obs > 1000) "VaR_superadd.rds" else NULL,
                            doOne=doOne, monitor = printInfo[["gfile"]],
                            ## load copula once on each worker, to not affect run time
@@ -136,9 +138,8 @@ if(doExtras) {
     ## => passing an init expression does not (easily) work
 
     ## doForeach() -------------------------------------------------------------
-    type <- if(.Platform$OS.type == "windows") "PSOCK" else "MPI"
     print(system.time(res3 <- {
-        doForeach(varList, cluster=makeCluster(nc, type=type),
+        doForeach(varList, cluster=makeCluster(nc, type="PSOCK"),
                   doOne=doOne, extraPkgs = "copula",
                   timer=mkTimer(gcFirst=TRUE) )
     }))
