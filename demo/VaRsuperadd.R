@@ -174,10 +174,12 @@ for(m in sub("q", "", names(varList[["qmargin"]][["value"]]))) {
     if(doPDF) pdf(paste0("VaR_superadd_", m, ".pdf"), width=6, height=6)
     mayplot(val[qmargin=m,,,,], varList, row.vars="family", col.vars="tau",
             xvar="alpha", ylim=if(n.obs > 1000) "local" else "global",
-            panel = function(z, y, col, nv, ...) {
-                lines(c(0, 1), c(0, 0), col="gray40") # y=0
-                lines(z, y, col=col, ...)
-            })
+            ## TODO: bug, currently not working
+            ## panel = function(z, y, col, nv, ...) {
+            ##     lines(c(0, 1), c(0, 0), col="gray40") # y=0
+            ##     lines(z, y, col=col, ...)
+            ## }
+            )
     if(doPDF) dev.off()
 }
 

@@ -85,7 +85,18 @@ array2df(x, responseName = "value")
       \code{sfile} or nothing (if \code{sfile} does not exist).}
     \item{getArray()}{an \code{\link{array}} containing the values
       of the specified component \code{comp} after applying \code{FUN}
-      (with useful defaults) to them.}
+      to them.  The default \code{FUN} produces an \code{\link{array}},
+      depending on \code{comp}, of
+      \describe{
+	\item{"value":}{values or \code{err.value} (in case of an error)}
+	\item{"error":}{logicals indicating whether there was an error}
+	\item{"warning":}{logicals indicating whether there was a warning}
+	\item{"time":}{timings as returned by \code{\link{doCallWE}()},
+	  i.e., typically (from \code{\link{mkTimer}}'s
+	  \code{\link{proc.time}()[1]}) the number of milliseconds
+	  of \dQuote{"CPU user time"}.}
+      }
+    }
     \item{array2df(x)}{a \code{\link{data.frame}} with several columns
       built from the \code{\link{dimnames}(x)} and a column named
       \code{responseName} with the values of \code{x}.}
@@ -98,25 +109,24 @@ array2df(x, responseName = "value")
   \code{mkAL()}, the function \code{ul()} turns out to
   be useful to (stepwise) unlist nested lists.
 
-  \code{valArray()} basically converts arrays of lists as
-  returned by \code{mkAL()} to an \code{\link{array}} only
-  containing the element \dQuote{value}. However, if there was an error,
-  this would be \code{\link{NULL}} and thus has to be encoded in the
-  \code{\link{array}}. The element by which \code{\link{NULL}} is
-  replaced is provided by \code{err.value}.
-
   \code{getArray()} converts arrays of lists as returned by
-  \code{mkAL()} to an \code{\link{array}} of \code{\link{numeric}}
-  after applying the specified \code{FUN}.  In case of an error, the
-  corresponding entry in the resulting array is replaced by
-  \code{err.value}. The  default \code{FUN} converts possible errors and
-  warnings to \code{\link{logical}} (indicating whether there was a
-  error or warning, respectively) and run times to \code{\link{numeric}}. For
+  \code{mkAL()} to an \code{\link{array}} of \code{\link{numeric}} (or
+  \code{\link{logical}}, see below) after applying the specified \code{FUN}.
+  \cr%%--------------------
+  In case of an error, the corresponding entry in the resulting array is
+  replaced by \code{err.value}.
+
+  The default \code{FUN} converts possible errors and warnings to
+  \code{\link{logical}} (indicating whether there was a error or
+  warning, respectively) and run times to \code{\link{numeric}}.  For
   \code{comp="value"}, the situation is trickier.  First of all, the
   resulting array contains dimensions for variables of type
   \dQuote{inner} and, if greater than 1, for the variable of type
-  \dQuote{N}; see the vignette for details.  Also, in case of an error,
-  the corresponding entry in the array is replaced by \code{err.value}.
+  \dQuote{N} (typically called \code{"n.sim"}); see the vignette for
+  details.
+  \cr%----------------
+  Use \code{FUN = identity} to get at the full error or warning objects,
+  for \code{comp = "error"} or for \code{comp = "warning"}, respectively.
 
   \code{saveSim()} and \code{maybeRead()} are
   useful for creating and (re)storing arrays from large(r) simulation
@@ -137,6 +147,12 @@ array2df(x, responseName = "value")
   \code{saveSim()} and \code{maybeRead()}, respectively.
 }
 \examples{
-## A longer, "interesting" example is in demo(robust.mean)
+\dontrun{
+## Get at the full error objects, notably (message, call):
+errObjs <- getArray(res, "error", FUN=identity)
+}
+
+if(FALSE) ## A longer, "interesting" example is in
+ demo(robust.mean)
 }
 \keyword{utilities}

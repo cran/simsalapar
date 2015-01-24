@@ -126,7 +126,7 @@ vLis <-
 
 iP <- c(4, 1:3)# <- permutation, putting alpha first
 dNms <- mkNms(vLis)[iP]
-## an array as from  x <- valArray( doMclapply(vLis, ..) ) :
+## an array as from  x <- getArray( doMclapply(vLis, ..) ) :
 x <- array(
     c(6.1981, 8.0478, 8.4265, 46.883, 74.359, 86.4394, 432.585, 743.27, 859.35,
       4.8508, 6.0286, 6.3965, 26.380, 35.132, 47.1517, 243.113, 311.36, 342.84,

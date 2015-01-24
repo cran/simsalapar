@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Marius Hofert and Martin Maechler
+## Copyright (C) 2012, 2014 Marius Hofert and Martin Maechler
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -12,6 +12,9 @@
 ##
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
+
+if(FALSE) ## "load me" via
+source(system.file("xtraR", "Sweave-prelim.R", package = "simsalapar", mustWork=TRUE))
 
 
 ## Custom graphics device (for cropping .pdf):
@@ -27,8 +30,12 @@ pdfCrop.off <- function() { # used automagically
            intern=FALSE) # crop the file (relies on PATH)
 }
 
-# options(width=70, useFancyQuotes=FALSE, prompt="R> ", continue="+  ") # JSS style, but ugly
+if(!exists("JSS")) JSS <- FALSE # just in case
+if(JSS) { # JSS style, but ugly
+options(width=70, useFancyQuotes=FALSE, prompt="R> ", continue="+  ")
+} else {
 options(width=70, useFancyQuotes=FALSE, prompt="> ", continue="  ")
+}
 ## as we use pdfCrop(): unneeded:
 ## options(SweaveHooks=list(fig=function() par(mar=c(4, 4, 0.4, 0.7))))
 
@@ -36,16 +43,27 @@ options(width=70, useFancyQuotes=FALSE, prompt="> ", continue="  ")
 .TexRoot <- "parallel.tex"
 
 ## "Global"  system.time() saving etc:
-.dir.exists <- function(x)
+
+if(getRversion() < "3.2") dir.exists <- function(x)
   is.character(x) && file.exists(x) && file.info(path.expand(x))$isdir
+## for back compatibility:
+.dir.exists <- function(x) { .Deprecated("dir.exists") ; dir.exists(x) }
 
 ##' Create directory if needed
-mkDir <- function(name) if(!.dir.exists(name)) dir.create(name, recursive=TRUE)
+mkDir <- function(name) if(!dir.exists(name)) dir.create(name, recursive=TRUE)
 
-##' Create "unique" file name
-mkFname <- function(stem, ext, sep="_") {
+##' Create "unique" file name - dependent on current time
+##' @examples mkFname("safe", time="min", ext="rds")
+mkFname <- function(stem, ext, sep="_", time = c("none", "hr", "min", "sec")) {
     stopifnot(is.character(stem))
-    fn <- paste(stem, format(as.Date(Sys.time())), sep=sep)
+    time <- match.arg(time)
+    tim <- Sys.time()
+    timCh <- switch(time, ##-> ?format.POSIXct
+                    "none" = format(as.Date(tim)),
+                    "hr"  = format(tim, "%Y-%m-%d_%H"),
+                    "min" = format(tim, "%Y-%m-%d_%H:%M"),
+                    "sec" = format(tim, "%Y-%m-%d_%H:%M:%S"))
+    fn <- paste(stem, timCh, sep=sep)
     if(nzchar(ext)) paste(fn, ext, sep=".") else fn
 }
 

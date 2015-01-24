@@ -47,10 +47,11 @@ dimnames2varlist(dmn)
     \item{\code{"N"}}{This type is reserved for a (single) variable
       named \code{n.sim} which provides the simulation replications;
       if it is not given, \code{n.sim} is implicitly treated as 1.}
-    \item{\code{"frozen"}}{Variables of this type remain
-      fixed (they do not vary) throughout the whole simultion study. The
-      affect the final result of course, but they do not appear as a
-      dimension in the result arry of the simulation study.}
+    \item{\code{"frozen"}}{Variables of this type remain fixed (they do
+      not vary) throughout the whole simultion study.  They affect the
+      final result but do not appear as a \emph{dimension} in the result
+      array of the simulation study.  This is the \bold{default}
+      \code{type} (apart from \code{n.sim} which defaults to \code{"N"}).}
     \item{\code{"grid"}}{Variables of this type are used to build a
       (physical) grid (a \code{\link{data.frame}}) with number of rows
       equal to the product of the lengths of all variables of this
@@ -67,6 +68,12 @@ dimnames2varlist(dmn)
     \item{\code{"inner"}}{Variables of this type are all dealt with within
       a sub-job for reasons of convenience, speed, load balancing etc.}
   }
+
+  The \code{dimnames2varlist()} functions creates a \code{varlist} from
+  a \emph{named} list of \code{\link{character}} vectors, typically
+  resulting from \code{\link{dimnames}(tt)} of a \code{\link{table}}
+  \code{tt}, see the Titanic example below.
+
   For more details, see Hofert and \enc{Mächler}{Maechler} (2014), and
   also the examples in \code{ demo(package="simsalapar") }.
 }
@@ -91,7 +98,7 @@ vList <- varlist(
     n     = list(type="grid", value = c(20, 100, 500)), # sample sizes
     meth  = list(type="grid", expr = quote(italic(method)),
                  value = c("classical", "robust")),
-    alpha = list(value = 0.95)) # type = "frozen"
+    alpha = list(value = 0.95)) # default type = "frozen"
 
 str(vList)# note the default 'expr' for  n and alpha; and type of alpha
 
@@ -105,9 +112,9 @@ stopifnot(identical(
     vList ))
 
 ## From a data.frame to a LaTeX table :
-arrTitan <- as.table(Titanic)
-vlTitan <- dimnames2varlist(dimnames(arrTitan))
-vlTitan
+str(dimnames(Titanic))
+vlTitan <- dimnames2varlist(dimnames(Titanic))
+vlTitan  # default 'type = "grid"' here
 toLatex(vlTitan)
 }
 \keyword{classes}

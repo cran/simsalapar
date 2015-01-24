@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Marius Hofert and Martin Maechler
+## Copyright (C) 2012-2014 Marius Hofert and Martin Maechler
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -14,20 +14,17 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-##' @title Wrapper of unlist(, recursive=FALSE)
-##' @param x argument
-##' @return argument unlisted by one level
 ##' @author Marius Hofert
 ul <- function(x) unlist(x, recursive=FALSE)
 
 ##' @title Converting a List to an Array of Lists
-##' @param x list of length prod(dm) where each element is a list of length 5
-##'	   containing the named elements "value", "error", "warning", "time", and
-##'	   ".Random.seed", the first four as returned by doCallWE()
+##' @param x list of length prod(dm) where each element is a list of length 4 (or 5)
+##'  containing the named elements "value", "error", "warning", "time" (and
+##' ".Random.seed"), the first four as returned by doCallWE()
 ##' @param vList variable specification list
 ##' @param repFirst logical
 ##' @param check logical indicating whether checks are carried out
-##' @return array of lists of length 5
+##' @return array of lists of length 4 (or 5)
 ##' @author Marius Hofert and Martin Maechler
 ##' @note Arrays are just vectors and thus have to have elements of length 1.
 ##'	  Therefore, the result of mkAL()  is accessed with [[,..,]],
@@ -181,6 +178,7 @@ maybeRead <- function(sfile, msg=TRUE)
 ##' { end }
 
 ##' @title Compute Array of Simulation Result Values
+##'  --- HIDDEN auxiliary called from getArray()
 ##' @param x typically, resulting from mkAL(), an array of 5-lists with
 ##'	   components "value", "error", "warning", "time", and ".Random.seed".
 ##' @param err.value numeric value which is used in case of an error
@@ -204,13 +202,14 @@ valArray <- function(x, err.value = NA, FUN = NULL)
 	cNm <- "dimnames"
 	cdmn <- lapply(r, dimnames)
     }
-    else { ## not used in usual cases
+    else { ## e.g., when we have no "inner" and return "just" a vector
 	if(any(diff(clen <- vapply(r, length, 1L)) != 0))
 	    stop("\"value\" elements of 'x' differ in length")
 	cdim <- clen[1]
 	cNm <- "names"
 	cdmn <- lapply(r, names)
     }
+    ## The [c]ommon [d]i[mn]ames {includes names(<vector>)}:
     cdmn <- if(!all.null(cdmn)) {
 	if(length(cdmn <- unique(cdmn)) != 1)
 	    stop(gettextf("\"value\" elements of 'x' have different %s", cNm),
@@ -225,9 +224,6 @@ valArray <- function(x, err.value = NA, FUN = NULL)
 	## add artificial dimnames
 	cdmn <- setNames(c(rep.int(list(NULL), dl), cdmn),
 			 paste("D", seq_len(dl), sep="."))
-    NA.proto <- r[[1]]
-    NA.proto[] <- err.value
-    rr[!no.err] <- list(NA.proto)
     if(is.null(FUN)) {
 	FUN <- ul
 	if(hasdim) {
@@ -236,21 +232,19 @@ valArray <- function(x, err.value = NA, FUN = NULL)
 	}
     } else stopifnot(is.function(FUN))
 
-    array(FUN(r), dim=dm, dimnames=dmn)
-}
+    ## stopifnot(  sum(no.err) == length(r) )
+    NA.proto <- r[[1]]
+    NA.proto[] <- err.value
+    rr[!no.err] <- list(NA.proto)
+    array(FUN(rr), dim=dm, dimnames=dmn)
+}## {valArray}
 
 ##' @title Compute Arrays Containing the Simulation Results
 ##' @param x array of lists with components "value", "error", "warning",
 ##'	   and "time" as returned by mkAL()
 ##' @param comp string specifying the component to pick out
 ##' @param FUN function to be applied after lapply() picks out 'comp' of x
-##'	       and before the array is built
-##' @return an array, depending on 'comp' and FUN. The default chooses
-##'	    value:        array of values or err.value (in case of an error)
-##'	    error:        array of logicals indicating whether there was an error
-##'	    warning:      array of logicals indicating whether there was a warning
-##'	    time:         array of timings as returned by doCallWE()
-##' @author Marius Hofert and Martin Maechler
+##'	       and before the array is built.
 ##' { getArray }
 getArray <- function(x, comp = c("value", "error", "warning", "time"),
 		     FUN = NULL, err.value = NA)

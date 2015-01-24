@@ -176,21 +176,24 @@ grid.legend <- function(..., draw=TRUE)
 
 }## if(getRversion() < "3.1.0")...
 
-##' @title Function for constructing a panel function and corresponding legend grob
-##' @param method panel function method (boxplot, lines, points,...)
+##' @title Function for constructing a \dQuote{pair} of panel function and corresponding legend grob
+##' @param method panel function method (boxplot, lines, points,...); currently must be one of
+##'  "boxplot", "lines".  Instead of "points", use "lines" with \code{type="b"}
 ##' @param type see lines() (for the panel function)
 ##' @param pch see legendGrob()
-##' @param legend.col legend colors
-##' @param legend.expr legend labels as expressions
-##' @param lwd line width for legend symbols
-##' @param cex parameter for legend symbols and labels
+##' @param lwd line width for panel
+##' @param cex (plot) character size (expansion) for panel
+##' @param do.legend logical indicating if a legend should be added ....{FIXME}
+##' @param leg.lwd line width for legend symbols
+##' @param leg.cex size (expansion) for legend symbols and labels
+##' @param leg.col legend colors
+##' @param leg.expr legend labels as expressions
 ##' @param verbose option for marking NAs
 ##' @param ... additional parameters passed to the panel function
 ##' @author Marius Hofert
-##' { panel }
 panelLegend <- function(method=c("boxplot", "lines"), type, pch,
-                        do.legend=TRUE, legend.col, legend.expr,
-                        lwd=1, cex=1,
+                        lwd = 1, cex = 1, do.legend=TRUE,
+                        leg.lwd = lwd, leg.cex = cex, leg.col, leg.expr,
                         verbose=getOption("verbose"), ...)
 {
     ## for marking NAs
@@ -208,10 +211,11 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
                     "boxplot" = {
                         function(x, y, col, nv, ...) {
                             stopifnot(is.matrix(y), (p <- length(x)) == ncol(y))
-                            wex <- 0.5 * diff(range(x))/ p
-                            boxplot.matrix(y, at = x, boxwex = wex, col=NA, border = col,
-                                           axes=FALSE, add=TRUE, names=FALSE, ...) # boxplot
-			    ## TODO: cex, lwd, pch --- not clear how to pass to boxplot
+			    wex <- 0.5 * diff(range(x))/ p
+			    boxplot.matrix(y, at = x, boxwex = wex, border = col,
+					   col = NA, axes = FALSE, add = TRUE, names = FALSE,
+					   ## cex, lwd, pch: "globals" passed here:
+					   cex = cex, lwd = lwd, pch = pch, ...)
                             my <- apply(y, 2, median, na.rm=TRUE)
                             lines(x, my, col=col, lwd=lwd) # lines
                             if(any(iy <- is.na(y))) { ## Mark NA's at the bottom
@@ -230,8 +234,8 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
 
     ## legend function
     lg <- if(do.legend) {
-        legendGrob(as.expression(legend.expr), nrow=1, pch=pch,
-                   gp=gpar(col=legend.col, lwd=lwd, cex=cex))
+        legendGrob(as.expression(leg.expr), nrow=1, pch=pch,
+                   gp=gpar(col=leg.col, lwd=lwd, cex=cex))
         ## => if lwd is omitted, do.lines = FALSE => *nothing* plotted!
     }
     else nullGrob()
@@ -284,6 +288,17 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
 
     ## variables displayed in a single panel (different colors)
     ovar <- c(xvar, col.vars, row.vars, if(has.n.sim) "n.sim") # *o*uter variables
+    if(!all(ovar %in% avar)) { ## error
+	if(!all(i <- xvar %in% avar))
+	    stop(gettextf("'%s' entry *not* in names(dimnames(x)): \"%s\"\n",
+			  "xvar", xvar[which(!i)[1]]), domain = NA)
+	if(!all(i <- col.vars %in% avar))
+	    stop(gettextf("'%s' entry *not* in names(dimnames(x)): \"%s\"\n",
+			  "col.vars", col.vars[which(!i)[1]]), domain = NA)
+	if(!all(i <- row.vars %in% avar))
+	    stop(gettextf("'%s' entry *not* in names(dimnames(x)): \"%s\"\n",
+			  "row.vars", row.vars[which(!i)[1]]), domain = NA)
+    }
     v <- setdiff(avar, ovar) # variables displayed in a single panel
     lv <- length(v) # number of different variables ('n', 'd',...) in a single panel
     if(lv == 0) {
@@ -348,7 +363,7 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
     ## panel (function) *and* legend (grob) ####################################
     check.panel <- function(p)
         is.function(p) && length(ff <- formals(p)) >= 4 &&
-            c("y", "col","nv") %in% names(ff[-1]) # all but first must match
+            c("y", "col", "nv") %in% names(ff[-1]) # all but first must match
 
     ## construct default panel function with matching legend
     if(is.null(pch)) pch <- if(type %in% c("p","o","b")) 1 # else NULL; pch from legendGrob()
@@ -359,10 +374,10 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
                                     val=dn[[v]][k]))) # legend symbols and labels
     pl <- panelLegend(method=method, type=type, pch=pch,
                       do.legend=do.legend,
-                      legend.col=v.col, legend.expr=lexpr,
-                      verbose=verbose, cex=leg.cex, ...)
+                      leg.col=v.col, leg.expr=lexpr,
+                      verbose=verbose, leg.cex=leg.cex, ...)
     ## panel
-    panel <- pl$panel
+    panel <- pl$panel # TODO: bug! this overwrites a user-provided panel! *and* fails with warnings 1: In plot.xy(xy.coords(x, y), type = type, ...) :  "panel" is not a graphical parameter (do we still allow a user-provided panel function?)
     stopifnot(check.panel(panel))
     ## legend
     if(do.legend) {

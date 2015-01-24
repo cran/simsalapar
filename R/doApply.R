@@ -1,4 +1,4 @@
-## Copyright (C) 2012-13 Marius Hofert and Martin Maechler
+## Copyright (C) 2012-14 Marius Hofert and Martin Maechler
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -59,7 +59,7 @@ doLapply <- function(vList, seed="seq", repFirst=TRUE, sfile=NULL,
                   n.sim=n.sim, seed=seed, doOne=doOne, monitor=monitor, ...)
 
     ## convert result and save
-    saveSim(res, vList=vList, repFirst=repFirst,sfile=sfile,check=check,doAL=doAL)
+    saveSim(res, vList=vList, repFirst=repFirst, sfile=sfile, check=check, doAL=doAL)
 }
 ##' { end } doLapply
 

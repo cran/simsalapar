@@ -4,7 +4,7 @@
 \alias{mkTimer}
 \description{
   \code{doCallWE()} performs the innermost computation of the simulation
-  study at hand. It is a version of \code{\link{do.call}(f, argl, *)},
+  study at hand.  It is a version of \code{\link{do.call}(f, argl, *)},
   with care of catching and storing \emph{both} error and warnings (via
   \code{\link{tryCatch.W.E}()}) and measures user time.  This is useful
   in large(r) simulation studies.

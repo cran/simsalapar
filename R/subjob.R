@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Marius Hofert and Martin Maechler
+## Copyright (C) 2012-2014 Marius Hofert and Martin Maechler
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -70,9 +70,9 @@ printInfo <- local({
          })
 })
 
-##' @title Function for Computing one Row of the Virtual Grid (subjob)
+##' @title Compute one Row of the Virtual Grid (subjob)
 ##' @param i row number of the virtual grid
-##' @param pGrid (physical) grid with all combinations of variables of type "grid" as
+##' @param pGrid physical grid with all combinations of variables of type "grid" as
 ##'        returned by mkGrid()
 ##' @param nonGrids values of non-"grid"-variables (if provided, passed to doOne())
 ##' @param n.sim number of simulation replications
@@ -92,19 +92,14 @@ printInfo <- local({
 ##'     character string: specifying a seeding method; currently only "seq" for
 ##'                       the seeds 1:n.sim for the n.sim simulation replications;
 ##'                       reproducible
-##' @param keepSeed logical indicating whether seed is 'stored'/appended
-##' @param repFirst logical; if FALSE (the default), all n.sim replications are computed for
-##'             a specific row in the (physical) grid before the next row is considered;
-##'             if TRUE, first all rows of the (physical) grid are computed for a fixed
+##' @param keepSeed logical indicating whether .Random.seed is 'stored'/appended
+##' @param repFirst logical; if TRUE, first all rows of the (physical) grid are computed for a fixed
 ##'             replication until the next replication is considered.
 ##' @param doOne function for computing one row in the (physical) grid; must return
 ##'        the return value of doCallWE()
 ##' @param monitor logical or function, see help file
 ##' @param ... additional arguments passed to doOne()
-##' @return a vector of length 5 if seed!=NA, otherwise of length 4. The first four
-##'         components contain the return value of doOne() which should be the return
-##'         value of doCallWE(). The 5th component contains .Random.seed before the
-##'         call of doCallWE() (for reproducibility).
+##' @return a vector of length 5 if(keepSeed), otherwise of length 4. ...
 ##' @note subjob() is an auxiliary function called from doLapply(), doMclapply(),
 ##'       doClusterApply() etc.
 ##' @author Marius Hofert and Martin Maechler

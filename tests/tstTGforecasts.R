@@ -5,7 +5,8 @@
 require(simsalapar)
 ## also  require(fGarch)
 
-(hasRmpi <- require("Rmpi") && .Platform$OS.type!="windows") # => Rmpi produces errors on the winbuilder
+(hasRmpi <- .Platform$OS.type!="windows" # <- as Rmpi produces errors on the winbuilder
+ && require("Rmpi"))
 
 ### Variable list ##############################################################
 
@@ -34,7 +35,7 @@ vList <-
 ### doOne() including ingredient functions #####################################
 ##  -------
 ##  instead of 'local', use a construction like
-##  doOne <- function(x, nonGrids, simGARCH11, predictTG)
+##  doOne <- function(x, <nonGrids>, simGARCH11, predictTG)
 
 doOne <- local({
 

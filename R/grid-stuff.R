@@ -30,7 +30,7 @@
        !all(nzchar(types)))
 	return("every variable in <varlist> must have a valid (string) \"type\"")
     ## if(!any(types == "grid"))
-    ##     return("varlist must have one \"grid\" typed variable")
+    ##     return("varlist must have at least one \"grid\" typed variable")
     TRUE
 }
 
@@ -89,8 +89,13 @@ dimnames2varlist <- function(dmn) {
 setAs("varlist","list", .vl.as.list)
 
 print.varlist <- function(x, ...) {
-    cat("'varlist' object (extending \"namedList\"), with str()ucture\n")
-    str(.vl.as.list(x), ...)
+    cat("'varlist' object (extending \"namedList\"), with components\n")
+    nx <- names(x)
+    fn <- setNames(format(nx), nx)
+    Form <- function(EE)
+	paste(sub("^list\\(", "(", deparse(EE, control=NULL)), collapse="\n  ")
+    for(n in nx)
+        cat(fn[[n]], ":", Form(x[[n]]), "\n")
     invisible(x)
 }
 setMethod(show, "varlist", function(object) print.varlist(object))
