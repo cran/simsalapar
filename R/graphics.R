@@ -63,119 +63,6 @@ bgGrob <- function(v, h, default.units="native", name=NULL, gp=gpar(), vp=NULL)
                           default.units=default.units),
              name=name, gp=gp, vp=vp)
 
-if(getRversion() < "3.1.0") { ## legendGrob(), grid.legend() are in R 3.1.0
-
-##' @title Function for constructing a legend grob
-##' @param labels legend labels (expressions)
-##' @param nrow number of rows of the legend
-##' @param ncol number of columns of the legend
-##' @param byrow logical indicating whether rows of the legend are filled first
-##' @param do.lines logical indicating whether legend lines are drawn
-##' @param lines.first logical indicating whether legend lines are drawn below
-##'        legend symbols
-##' @param hgap horizontal space between the legend entries
-##' @param vgap vertical space between the legend entries
-##' @param default.units default units
-##' @param pch legend symbol
-##' @param gp graphical parameters
-##' @param vp viewport
-##' @return legend grob
-##' @author Marius Hofert, Martin Maechler
-##' { legendGrob }
-legendGrob <-
-    function(labels, nrow, ncol, byrow=FALSE,
-             do.lines = has.lty || has.lwd, lines.first=TRUE,
-             hgap=unit(1, "lines"), vgap=unit(1, "lines"),
-             default.units="lines",
-             pch, gp=gpar(), vp=NULL)
-{
-        ## type checking on arguments; labels: character, symbol or expression:
-        labels <- as.graphicsAnnot(labels)
-        labels <- if(is.character(labels)) as.list(labels) else as.expression(labels)
-        nkeys <- if(is.call(labels)) 1 else length(labels)
-        if(nkeys == 0) return(nullGrob(vp=vp))
-        ## hgap, vgap
-        if (!is.unit(hgap)) hgap <- unit(hgap, default.units)
-        if (length(hgap) != 1) stop("'hgap' must be single unit")
-        if (!is.unit(vgap)) vgap <- unit(vgap, default.units)
-        if (length(vgap) != 1) stop("'vgap' must be single unit")
-        ## nrow, ncol
-        miss.nrow <- missing(nrow)
-        miss.ncol <- missing(ncol)
-        if(miss.nrow && miss.ncol) {ncol <- 1; nrow <- nkeys} # defaults to 1-column legend
-        else if( miss.nrow && !miss.ncol) nrow <- ceiling(nkeys / ncol)
-        else if(!miss.nrow &&  miss.ncol) ncol <- ceiling(nkeys / nrow)
-        if(nrow < 1) stop("'nrow' must be >= 1")
-        if(ncol < 1) stop("'ncol' must be >= 1")
-	if(nrow * ncol < nkeys) stop("nrow * ncol < #{legend labels}")
-	## pch, gp
-	if(has.pch <- !missing(pch) && length(pch) > 0) pch <- rep_len(pch, nkeys)
-        if(doGP <- length(nmgp <- names(gp)) > 0) {
-            if(has.lty  <-  "lty" %in% nmgp) gp$lty  <- rep_len(gp$lty,  nkeys)
-            if(has.lwd  <-  "lwd" %in% nmgp) gp$lwd  <- rep_len(gp$lwd,  nkeys)
-            if(has.col  <-  "col" %in% nmgp) gp$col  <- rep_len(gp$col,  nkeys)
-            if(has.fill <- "fill" %in% nmgp) gp$fill <- rep_len(gp$fill, nkeys)
-        } else {
-            gpi <- gp
-            if(missing(do.lines)) do.lines <- FALSE
-        }
-
-        ## main
-        u0 <- unit(0, "npc")
-        u1 <- unit(1, "char")
-        ord <- if(lines.first) 1:2 else 2:1
-        fg <- frameGrob(vp = vp)      # set up basic frame grob (for packing)
-        for (i in seq_len(nkeys)) {
-            if(doGP) {
-                gpi <- gp
-                if(has.lty)  gpi$lty <- gp$lty[i]
-                if(has.lwd)  gpi$lwd <- gp$lwd[i]
-                if(has.col)  gpi$col <- gp$col[i]
-                if(has.fill) gpi$fill<- gp$fill[i]
-            }
-            if(byrow) {
-                ci <- 1+ (i-1) %%  ncol
-                ri <- 1+ (i-1) %/% ncol
-            } else {
-                ci <- 1+ (i-1) %/% nrow
-                ri <- 1+ (i-1) %%  nrow
-            }
-            ## borders; unit.c creates a 4-vector of borders (bottom, left, top, right)
-            vg <- if(ri != nrow) vgap else u0
-            symbol.border <- unit.c(vg, u0, u0, 0.5 * hgap)
-            text.border   <- unit.c(vg, u0, u0, if(ci != ncol) hgap else u0)
-
-            ## points/lines grob:
-            plGrob <- if(has.pch && do.lines)
-                gTree(children = gList(linesGrob (0:1, 0.5, gp=gpi),
-                      pointsGrob(0.5, 0.5, default.units="npc", pch = pch[i], gp=gpi))[ord])
-            else if(has.pch) pointsGrob(0.5, 0.5, default.units="npc", pch = pch[i], gp=gpi)
-            else if(do.lines) linesGrob(0:1, 0.5, gp=gpi)
-            else nullGrob() # should not happen...
-            fg <- packGrob(fg, plGrob,
-                           col = 2*ci-1, row = ri, border = symbol.border,
-                           width = u1, height = u1, force.width = TRUE)
-            ## text grob: add the labels
-            gpi. <- gpi
-            gpi.$col <- "black" # maybe needs its own 'gp' in the long run (?)
-            fg <- packGrob(fg, textGrob(labels[[i]], x = 0, y = 0.5,
-                                        just = c("left", "centre"), gp=gpi.),
-                           col = 2*ci, row = ri, border = text.border)
-        }
-        fg
-    }
-##' { end } legendGrob
-
-grid.legend <- function(..., draw=TRUE)
-{
-    g <- legendGrob(...)# will error out if '...' has nonsense
-    if (draw)
-        grid.draw(g)
-    invisible(g)
-}
-
-}## if(getRversion() < "3.1.0")...
-
 ##' @title Function for constructing a \dQuote{pair} of panel function and corresponding legend grob
 ##' @param method panel function method (boxplot, lines, points,...); currently must be one of
 ##'  "boxplot", "lines".  Instead of "points", use "lines" with \code{type="b"}
@@ -194,6 +81,7 @@ grid.legend <- function(..., draw=TRUE)
 panelLegend <- function(method=c("boxplot", "lines"), type, pch,
                         lwd = 1, cex = 1, do.legend=TRUE,
                         leg.lwd = lwd, leg.cex = cex, leg.col, leg.expr,
+                        panel.first = NULL, panel.last = NULL,
                         verbose=getOption("verbose"), ...)
 {
     ## for marking NAs
@@ -209,9 +97,10 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
     method <- match.arg(method)
     panel <- switch(method,
                     "boxplot" = {
-                        function(x, y, col, nv, ...) {
+                        function(x, y, col, ...) {
                             stopifnot(is.matrix(y), (p <- length(x)) == ncol(y))
 			    wex <- 0.5 * diff(range(x))/ p
+                            if (!is.null(panel.first)) panel.first(x, y, col, ...)
 			    boxplot.matrix(y, at = x, boxwex = wex, border = col,
 					   col = NA, axes = FALSE, add = TRUE, names = FALSE,
 					   ## cex, lwd, pch: "globals" passed here:
@@ -221,13 +110,16 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
                             if(any(iy <- is.na(y))) { ## Mark NA's at the bottom
                                 markNA(x[apply(iy, 2, any)], col)
                             }
+                            if (!is.null(panel.last)) panel.last(x, y, col, ...)
                         }
                     },
                     "lines" = {
-                        function(x, y, col, nv, ...) {
+                        function(x, y, col, ...) {
                             ## lines/points
+                            if (!is.null(panel.first)) panel.first(x, y, col, ...)
                             lines(x, y, type=type, pch=pch, col=col, lwd=lwd, cex=cex, ...)
                             if(any(iy <- is.na(y))) markNA(x[iy], col) # Mark NA's at the bottom
+                            if (!is.null(panel.last)) panel.last(x, y, col, ...)
                         }
                     },
                     stop(gettextf("method '%s' not yet implemented", method), domain=NA))
@@ -249,6 +141,7 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
 ##' { mayplot }
 mayplot <- function(x, vList, row.vars, col.vars, xvar,
                     method = if(has.n.sim) "boxplot" else "lines",
+                    panel.first = NULL, panel.last = NULL,
                     type = "l", pch = NULL,  ylim = "global",
                     log = "", do.legend = TRUE,
 		    spc = c(0.04/max(1,n.x-1), 0.04/max(1,n.y-1)),
@@ -359,11 +252,10 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
     n.x <- max(1, nx) # number of columns to plot
     n.y <- max(1, ny) # number of rows to plot
 
-
     ## panel (function) *and* legend (grob) ####################################
     check.panel <- function(p)
-        is.function(p) && length(ff <- formals(p)) >= 4 &&
-            c("y", "col", "nv") %in% names(ff[-1]) # all but first must match
+        is.function(p) && length(ff <- formals(p)) >= 3 &&
+            c("y", "col") %in% names(ff[-1]) # all but first must match
 
     ## construct default panel function with matching legend
     if(is.null(pch)) pch <- if(type %in% c("p","o","b")) 1 # else NULL; pch from legendGrob()
@@ -375,9 +267,10 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
     pl <- panelLegend(method=method, type=type, pch=pch,
                       do.legend=do.legend,
                       leg.col=v.col, leg.expr=lexpr,
+                      panel.first=panel.first, panel.last=panel.last,
                       verbose=verbose, leg.cex=leg.cex, ...)
     ## panel
-    panel <- pl$panel # TODO: bug! this overwrites a user-provided panel! *and* fails with warnings 1: In plot.xy(xy.coords(x, y), type = type, ...) :  "panel" is not a graphical parameter (do we still allow a user-provided panel function?)
+    panel <- pl$panel
     stopifnot(check.panel(panel))
     ## legend
     if(do.legend) {
@@ -492,7 +385,7 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
                                  if(nxy) xi[1,j,k,,] else if(ny) xi[1,,k,,] else xi[j,,k,,],
                                  stop("wrong length(ovar)"))
                     ## panel
-                    panel(z, y=y., col=v.col[k], nv=nv, ...)
+                    panel(z, y=y., col=v.col[k], ...)
                 }
             } else { # no v (still n.sim or not)
                 ## y values
@@ -502,7 +395,7 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
 			     if(nxy) xi[1,j,,] else if(ny) xi[1,,,] else xi[j,,,],
 			     stop("wrong length(ovar)"))
                 ## panel
-		panel(z, y=y., col=v.col, nv=0, ...)
+		panel(z, y=y., col=v.col, ...)
             }
 
 	    ## axes ############################################################

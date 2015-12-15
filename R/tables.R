@@ -14,108 +14,15 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-### 'poor-man's approach' how to create lines for a LaTeX table
+### 'Poor-man's approach' how to create lines for a LaTeX table
 
-
-
-## This is a *fixed* version from R ./src/library/stats/R/ftable.R (R-3.0.0; 2013-03-05)
-## Meant to be for all those who don't have R-3.0.0
-## Note: this can be deprecated after a while
-format.ftable. <-
-    function(x, quote=TRUE, digits=getOption("digits"),
-	     method=c("non.compact", "row.compact", "col.compact", "compact"),
-	     lsep=" | ", ...)
-{
-    if(!inherits(x, "ftable"))
-	stop("'x' must be an \"ftable\" object")
-    charQuote <- function(s) if(quote && length(s)) paste0("\"", s, "\"") else s
-    makeLabels <- function(lst) {
-	lens <- sapply(lst, length)
-	cplensU <- c(1, cumprod(lens))
-	cplensD <- rev(c(1, cumprod(rev(lens))))
-	y <- NULL
-	for (i in rev(seq_along(lst))) {
-	    ind <- 1 + seq.int(from = 0, to = lens[i] - 1) * cplensD[i + 1L]
-	    tmp <- character(length = cplensD[i])
-	    tmp[ind] <- charQuote(lst[[i]])
-	    y <- cbind(rep(tmp, times = cplensU[i]), y)
-	}
-	y
-    }
-    makeNames <- function(x) {
-	nmx <- names(x)
-	if(is.null(nmx)) rep.int("", length(x)) else nmx
-	## Care!	 rep_len() only in R >= 3.0.0
-    }
-
-    l.xrv <- length(xrv <- attr(x, "row.vars"))
-    l.xcv <- length(xcv <- attr(x, "col.vars"))
-    method <- match.arg(method)
-    ## deal with 'extreme' layouts (no col.vars, no row.vars)
-    if(l.xrv == 0) {
-	if(method=="col.compact")
-	    method <- "non.compact" # already produces a 'col.compact' version
-	else if (method=="compact")
-	    method <- "row.compact" # only need to 'row.compact'ify
-    }
-    if(l.xcv == 0) {
-	if(method=="row.compact")
-	    method <- "non.compact" # already produces a 'row.compact' version
-	else if (method=="compact")
-	    method <- "col.compact" # only need to 'col.compact'ify
-    }
-    LABS <-
-	switch(method,
-	       "non.compact" =		# current default
-	   {
-	       cbind(rbind(matrix("", nrow = length(xcv), ncol = length(xrv)),
-			   charQuote(makeNames(xrv)),
-			   makeLabels(xrv)),
-		     c(charQuote(makeNames(xcv)),
-		       rep("", times = nrow(x) + 1)))
-	   },
-	       "row.compact" =		# row-compact version
-	   {
-	       cbind(rbind(matrix("", nrow = length(xcv)-1, ncol = length(xrv)),
-			   charQuote(makeNames(xrv)),
-			   makeLabels(xrv)),
-		     c(charQuote(makeNames(xcv)),
-		       rep("", times = nrow(x))))
-	   },
-	       "col.compact" =		# column-compact version
-	   {
-	       cbind(rbind(cbind(matrix("", nrow = length(xcv), ncol = length(xrv)-1),
-				 charQuote(makeNames(xcv))),
-			   charQuote(makeNames(xrv)),
-			   makeLabels(xrv)))
-	   },
-	       "compact" =		# fully compact version
-	   {
-	       xrv.nms <- makeNames(xrv)
-	       xcv.nms <- makeNames(xcv)
-	       mat <- cbind(rbind(cbind(matrix("", nrow = l.xcv-1, ncol = l.xrv-1),
-					charQuote(makeNames(xcv[-l.xcv]))),
-				  charQuote(xrv.nms),
-				  makeLabels(xrv)))
-	       mat[l.xcv, l.xrv] <- paste(tail(xrv.nms, 1),
-					  tail(xcv.nms, 1), sep = lsep)
-	       mat
-	   },
-	       stop("wrong method"))
-    DATA <- rbind(if(length(xcv)) t(makeLabels(xcv)),
-		  if(method %in% c("non.compact", "col.compact"))
-			rep("", times = ncol(x)),
-		  format(unclass(x), digits = digits, ...))
-    cbind(apply(LABS, 2L, format, justify = "left"),
-	  apply(DATA, 2L, format, justify = "right"))
-} ## {format.ftable.}
+## Now relies on R (>= 3.0.0)'s  format.ftable():
 
 ##' Just a version of format.ftable(), returning our "matrix + attr" object:
 fftable <- function(x, lsep = " | ", quote = FALSE, method = "compact", ...)
 {
     stopifnot(inherits(x, "ftable"))
-    structure((if(getRversion() >= "3.0.0") format else format.ftable.)(
-			     x, method=method, quote=quote, lsep=lsep, ...),
+    structure(format(x, method=method, quote=quote, lsep=lsep, ...),
 	      ncv = length(attr(x, "col.vars")),
               ## (method=="non.compact" || method=="col.compact"),
               ## => this would ensure the midrule to come after the names of
@@ -135,12 +42,12 @@ fftable <- function(x, lsep = " | ", quote = FALSE, method = "compact", ...)
 ##' @author Marius Hofert
 cattablines <- function(x, rsep = "\\\\", csep = " & ", include.rownames = TRUE) {
     stopifnot(is.matrix(x))
-    n <- nrow(x); d <- ncol(x)
     if(include.rownames) {
         x <- cbind(rownames(x), x)
         rownames(x) <- NULL
     }
-    cat(paste0(apply(x, 1, function(row) paste0(row, collapse=csep)), rsep), sep="\n") # table content
+    cat(paste0(apply(x, 1L, function(row) paste0(row, collapse=csep)), rsep),
+	sep="\n") # table content
 }
 
 ##' @title Ingredients for Converting an ftable to a LaTeX Table

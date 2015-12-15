@@ -35,6 +35,8 @@ importFrom("methods", as, "as<-", is, new, setAs, setClass, coerce,
 
 importFrom("grDevices", adjustcolor, axisTicks, colorRampPalette,
            dev.off, extendrange)
+importFrom("graphics", axTicks, axis, boxplot.matrix, lines,
+             mtext, par, plot.new, plot.window)
 
 ## "grid": --> below
 
@@ -67,7 +69,7 @@ importFrom("grid"
 	   , grid.rect, grid.text, grid.polyline, grid.points
            , grid.grill
 	   , grid.draw, grid.layout, grid.show.layout)
-if(getRversion() >= "3.1.0")
+if(getRversion() >= "3.1.0")# now (2015-11) required by DESCRIPTION
     importFrom("grid", legendGrob, grid.legend)
 
 

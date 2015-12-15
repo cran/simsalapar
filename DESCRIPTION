@@ -1,12 +1,13 @@
 Package: simsalapar
-Version: 1.0-5
-Date: 2015-01-21
-Title: Tools for Simulation Studies in Parallel with R
-Description: Tools for setting up, conducting, and evaluating larger-scale
-  simulation studies, including parallel computations.
+Version: 1.0-6
+Date: 2015-12-11
+Title: Tools for Simulation Studies in Parallel
+Description: Tools for setting up ("design"), conducting, and evaluating
+  large-scale simulation studies with graphics and tables, including
+  parallel computations.
 Author: Marius Hofert and Martin Maechler <maechler@stat.math.ethz.ch>
 Maintainer: Marius Hofert <marius.hofert@uwaterloo.ca>
-Depends: R (>= 3.0.0), graphics
+Depends: R (>= 3.1.0), graphics
 Imports: stats, parallel, utils, grDevices, methods, grid, sfsmisc,
         gridBase (>= 0.4-6), colorspace
 Suggests: lattice, Rmpi, Hmisc, copula, foreach, doParallel, fGarch,
@@ -14,10 +15,10 @@ Suggests: lattice, Rmpi, Hmisc, copula, foreach, doParallel, fGarch,
 SuggestsNote: copula is only used for the vignettes, see their
         VignetteDepends; fGarch: only used in demo(TGforecasts),
         robustbase in another demo.
-KeepSource: TRUE
+KeepSource: yes
 License: GPL-2 | GPL-3
 Encoding: UTF-8
-Packaged: 2015-01-23 21:24:19 UTC; mhofert
 NeedsCompilation: no
+Packaged: 2015-12-14 22:03:16 UTC; mhofert
 Repository: CRAN
-Date/Publication: 2015-01-24 06:45:31
+Date/Publication: 2015-12-15 01:19:07

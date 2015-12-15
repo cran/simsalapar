@@ -36,7 +36,7 @@ if(n.alpha > n.obs)
 if(!exists("doExtras")) doExtras <- simsalapar:::doExtras()
 doExtras
 
-doPDF <- if(usr=="mhofert") TRUE else !dev.interactive(orNone=TRUE)
+
 
 ## load packages
 require(simsalapar)
@@ -55,9 +55,9 @@ varList <-
         tau = list(type="grid", value = c(0.2, 0.5, 0.8)),
         ## margins
         qmargin = list(type="inner", expr = quote(F[j]),
-                      value = c(norm = qnorm,
-                                t4   = function(p) qt(p, df=4),
-                                Par2 = function(p) (1-p)^(-1/2))), # Pareto(2)
+                       value = c(norm = qnorm,
+                       t4   = function(p) qt(p, df=4),
+                       Par2 = function(p) (1-p)^(-1/2))), # Pareto(2)
         ## VaR confidence levels
         alpha = list(type="inner", value = 0:n.alpha/n.alpha))
 
@@ -101,14 +101,14 @@ doOne <- function(n, d, family, tau, qmargin, alpha)
 ### 2) Main ####################################################################
 
 ## check doOne
+
 ## manually
 require(copula) # for the following call of doOne()
-if(FALSE) {
-    nonGr <- get.nonGrids(varList)$nonGrids
-    dd <- doOne(n= min(nonGr$n, 100), d=4, family="Clayton", tau=0.5,
-                qmargin=nonGr$qmargin, alpha=nonGr$alpha)
-    stopifnot(dim(dd) == with(nonGr, c(length(qmargin), length(alpha))))
-}
+nonGr <- get.nonGrids(varList)$nonGrids
+dd <- doOne(n= min(nonGr$n, 100), d=4, family="Clayton", tau=0.5,
+            qmargin=nonGr$qmargin, alpha=nonGr$alpha)
+stopifnot(dim(dd) == with(nonGr, c(length(qmargin), length(alpha))))
+
 ## with doCheck
 doCheck(doOne, varList)
 
@@ -170,16 +170,21 @@ dimnames(val)[["tau"]] <- paste0("tau==", dimnames(val)[["tau"]])
 
 ## plot of VaR estimates
 ## plotting to pdf if not interactive graphics (=> R CMD BATCH VaRsuperadd.R)
-for(m in sub("q", "", names(varList[["qmargin"]][["value"]]))) {
+doPDF <- if(usr=="mhofert") TRUE else !dev.interactive(orNone=TRUE)
+if(!doPDF) par(ask=TRUE)
+
+names(varList[["qmargin"]][["value"]]) # "norm" , "t4", "Par2"
+for(m in names(varList[["qmargin"]][["value"]])) {
     if(doPDF) pdf(paste0("VaR_superadd_", m, ".pdf"), width=6, height=6)
     mayplot(val[qmargin=m,,,,], varList, row.vars="family", col.vars="tau",
             xvar="alpha", ylim=if(n.obs > 1000) "local" else "global",
-            ## TODO: bug, currently not working
-            ## panel = function(z, y, col, nv, ...) {
-            ##     lines(c(0, 1), c(0, 0), col="gray40") # y=0
-            ##     lines(z, y, col=col, ...)
-            ## }
-            )
+            panel.first = function(...) abline(h=0, col="gray40"), # gray line
+            panel.last = function(x,y, col, ...) {
+                ## For demo: write the 'panel.last' string, dependent on (x,y)
+                rx <- range(x); dx <- diff(rx)
+                ry <- range(y); dy <- diff(ry)
+                text(rx[1]+.7*dx, ry[1]+.2*dy, "< 0: superadd.", col=col)
+            })
     if(doPDF) dev.off()
 }
 

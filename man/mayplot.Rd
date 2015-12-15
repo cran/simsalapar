@@ -10,6 +10,7 @@
 \usage{
 mayplot(x, vList, row.vars, col.vars, xvar,
        method = if(has.n.sim) "boxplot" else "lines",
+       panel.first = NULL, panel.last = NULL,
        type = "l", pch = NULL, ylim = "global",
        log = "", do.legend = TRUE,
        spc = c(0.04/max(1,n.x-1), 0.04/max(1,n.y-1)),
@@ -33,20 +34,15 @@ mayplot(x, vList, row.vars, col.vars, xvar,
     in the plot columns}
   \item{xvar}{dimension name of x; this variable is plotted
     on the x axis of each sub-plot}
-
-  %% \item{panel}{\code{\link{function}} with arguments
-  %%   \code{(x, y, col, nv, ...)}, or, by default, \code{NULL}.  The
-  %%   default is to consider \code{n.sim}, and if that is present (both as
-  %%   array dimension and as \code{type = "N"} entry in the variable list
-  %%   \code{vList}), use box plots (\code{\link{boxplot}()}), otherwise use
-  %%   \code{\link{points}(*, type = "b")}.}
-  %% \item{legend.grob}{\code{\link{grob}} used as legend or \code{NULL}
-  %%   which constructs a default legend if and only if \code{panel=NULL}.}
-
   \item{method}{\code{\link{character}} string indicating the plot
     method used. Currently available are \code{"boxplot"} (the default
     if \code{vList} has \code{n.sim}) or \code{"lines"} (otherwise;
     \code{type} adjusts the type of lines used).}
+  \item{panel.first, panel.last}{\code{\link{function}} or \code{NULL}
+    (default).  If specified, \code{panel.first(x, y, col, ...)} is
+    called before and \code{panel.last(x, y, col, ...)} is called after
+    the main plotting functions (think \code{boxplot.matrix()} and
+    \code{lines()}) are called in each panel.}
   \item{type}{character indicating the type of plotting in the
     non-boxplot case; actually any of the \code{type}s as in
     \code{\link{plot.default}}.}

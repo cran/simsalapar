@@ -13,9 +13,9 @@ dev.off.pdf(file="Rplots.pdf", crop=NULL, embedFonts="", ...)
   \item{file}{output file name including extension .pdf.}
   \item{crop}{cropping command, can be one of:
     \describe{
-      \item{\code{\link{NULL}}}{crop with the command \code{"pdfcrop
-      --pdftexcmd pdftex file file 1>/dev/null 2>&1"}. This is suitable
-	for Unix; for non-Unix, no cropping is done.}
+      \item{\code{\link{NULL}}}{crop with the command
+	\code{"pdfcrop --pdftexcmd pdftex file file 1>/dev/null 2>&1"}.
+	This is suitable for Unix; for non-Unix, no cropping is done.}
       \item{\code{\link{character}}}{a string containing the crop
 	command.}
       \item{""}{do not crop.}
@@ -37,14 +37,17 @@ dev.off.pdf(file="Rplots.pdf", crop=NULL, embedFonts="", ...)
 \value{
   \code{\link{invisible}()}.
 }
-\author{Marius Hofert.}
+\author{Marius Hofert}
 \seealso{
   \code{\link{dev.off}()} for closing a device,
   \code{\link{embedFonts}()} for font embedding.
   \pkg{sfsmisc}'s \code{\link{pdf.end}()} for another approach.
 }
 \examples{
-## definition
-dev.off.pdf
+## typical usage
+doPDF <- !dev.interactive(orNone=TRUE)
+if(doPDF) pdf(file=(file <- "crop_device.pdf"), width=6, height=6)
+plot(1)
+if(doPDF) dev.off.pdf(file)
 }
 \keyword{utilities}

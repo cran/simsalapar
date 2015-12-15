@@ -38,8 +38,10 @@ dim(pGrid <- mkGrid(varList))
 head(pGrid)
 tail(pGrid)
 
-.checking <- exists(".checking") && .checking
-if(interactive() || .checking) { ## i.e., when run as a demo, need much smaller sizes
+.fullSim  <- exists(".fullSim")  && .fullSim   # default FALSE
+.checking <- exists(".checking") && .checking  # default FALSE
+if(!.fullSim && (interactive() || .checking)) {
+    ## e.g., when run as a demo, need much smaller sizes
     message("Redimensioning the variable list in order to finish  ``in time'' ..")
     varList.full <- varList
     varList <- set.n.sim(varList, 512)
@@ -107,7 +109,7 @@ if(!file.exists(smlFile) ||
     stime.sml <- system.time(
         r.sml <- doLapply(vl.sml, seed = "seq",
                           subjob. = subjob, doOne=do1mcd, timer=mkTimer(gcFirst=FALSE)))
-    print(stime.sml)# ~ 23 sec (lynne 2014;  MH: 68s; ada-13: 45.5 sec; nb-mm3: 35.5 sec)
+    print(stime.sml)# ~ 12 sec (lynne 2015-12); 23 sec (lynne 2014);  MH: 68s; ada-13: 45.5 sec; nb-mm3: 35.5 sec)
     save(stime.sml, r.sml, vl.sml, file = smlFile)
 } else {
     cat("using", smlFile, "from" , format(file.info(smlFile)[["ctime"]]),":\n")
@@ -123,31 +125,42 @@ mayplot(v.sml, vl.sml, row.vars = "p",  col.vars = "alpha", xvar = "n", cex = .5
 if(! .checking) { ## now the "big" simulation:
     ##
 print(system.time({
-### res <- doForeach(varList, block.size = 64, <<< 2014-12-04: takes 193 seconds on nb-mm3  ???
     res <- doClusterApply(varList, block.size = 64,  ## only 23 seonds
                  seed = "seq", #-> no 'seed' needed
-                 extraPkgs = "robustbase", # <--!!{otherwise do1mcd() needs require(.): inefficient}
-                 subjob. = subjob, doOne=do1mcd, timer=mkTimer(FALSE))
+                 initExpr = require("robustbase"), # <--!!{otherwise do1mcd() needs require(.): inefficient}
+                 doOne=do1mcd, timer=mkTimer(FALSE))
 }))
 } else {
     cat("Using  **smaller**  example in the following:\n")
     res <- r.sml; varList <- vl.sml
 }
-## MH:
-## Warning message:
-## In mkAL(x, vList, repFirst = repFirst, check = check) :
-##   All "value"s are of length zero. The first error message is
-##  "unused argument (`NA` = NULL)"
+## No warning/error anymore -- hooray
 
-## now save "all", including some platform info:
-(sess.I <- sessionInfo())  # see it interactively
-node <- Sys.info()[c("nodename","release")]
-node.I <- c(node, cores = parallel::detectCores())
-save(r.sml, vl.sml,
-     res, varList,
-     do1mcd, sess.I, node.I,
-     file = sprintf("robcovMCD-sim_%s_%s.rda",
-     node[1], format(Sys.Date())))
+moreChecks <- FALSE
+## NOTE: This works too --- about same speed on lynne 2015:
+##  user  system elapsed
+## 1.206   0.372  43.613
+if(moreChecks)
+print(system.time({
+    reF <- doForeach(varList, block.size = 64,
+                     seed = "seq", #-> no 'seed' needed
+                     ## <<< 2014-12-04: takes 193 seconds on nb-mm3  ???
+                     extraPkgs = "robustbase",
+                     ## <--!!{otherwise do1mcd() needs require(.): inefficient}
+                 doOne=do1mcd, timer=mkTimer(FALSE))
+}))
+
+
+if(!.checking) { ## save "all", including some platform info:
+    print(sess.I <- sessionInfo())  # see it interactively
+    node <- Sys.info()[c("nodename","release")]
+    node.I <- c(node, cores = parallel::detectCores())
+    sF <- sprintf("robcovMCD-sim_%s_%s.rda",
+              node[1], format(Sys.Date()))
+    cat(sprintf("Save file (in %s): %s\n", getwd(), sF))
+    save(r.sml, vl.sml, res, varList, do1mcd, sess.I, node.I,
+         file = sF)
+}
 
 ## For interactive experiments
 if(FALSE)
@@ -161,14 +174,34 @@ apply(val, 1:2, mean)## -- see boxplots below
 apply(val, 1:2,   sd)## comparable
 
 tools::assertError(## now gives an *intelligible* error message:
+    ##   'row.vars' entry *not* in names(dimnames(x)): "meth"
 mayplot(val, varList, pcol="tomato",
 	row.vars = "meth", col.vars = "p", xvar = "n")
 )
 
 valm <- apply(val, 1:3, median)
-valm[,,"0.75"] - valm[,,"0.50"] # alpha = 0.75 is consistently larger (medians!)
+dQ <- valm[,, if(.fullSim)"0.7500" else "0.75"] -
+      valm[,, if(.fullSim)"0.5000" else "0.50"]
+dQ  # alpha = 0.75 is consistently larger (medians!)
 if(FALSE)## bug in mayplot() -- this gives an error {wrong switch() decision?}
 mayplot(valm, varList, row.vars = NULL, col.vars = "p", xvar = "n", method="lines")
+
+(med.dQ <- apply(dQ, 2, median))
+## .checking == TRUE:
+##         1         2         3         5
+## 0.1776142 0.1378879 0.1333007 0.1365668
+## .checking == FALSE -- .fullSim == FALSE
+##         1         2         3         4         7
+## 0.1278584 0.1244483 0.1235473 0.1275327 0.1108431
+## .checking == FALSE -- .fullSim == TRUE
+##         1         2         3         4         5         7  10 15 25
+## 0.1389249 0.1179094 0.1134679 0.1154377 0.1176342 0.1022914  NA NA NA
+if(.checking) {
+    stopifnot(0.13 <= med.dQ, med.dQ <= 0.18)
+} else if(!.fullSim) {
+    stopifnot(0.11 <= med.dQ, med.dQ <= 0.13)
+} else ## .fullSim
+    stopifnot(0.10 <= med.dQ[1:6], med.dQ[1:6] <= 0.14)
 
 ## BUG in  mayplot():
 mayplot(val, varList, row.vars = NULL, col.vars = "p", xvar = "n")
@@ -208,4 +241,4 @@ n.err                          ## ==> none at all for this example
 
 ## compute percentages of errors:
 n.sim <- ng$n.sim
-ftable(n.err/n.sim * 100)
+ftable(n.err/n.sim * 100) # all zero.. (as n.err ==== 0)

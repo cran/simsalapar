@@ -168,8 +168,25 @@ subjob <- function(i, pGrid, nonGrids, n.sim, seed, keepSeed=FALSE,
 	      if(missing(nonGrids) || length(nonGrids) == 0)
 	      list(...) else c(nonGrids, ...))
     nmOne <- names(formals(doOne))
-    if(!identical(nmOne, "..."))
-	args <- args[match(names(args), nmOne)] # adjust order for doOne()
+    if(!identical(nmOne, "...")) {
+	io <- match(nmOne, names(args))         ## __ keep in sync with doCheck() below __
+	## adjust *order* of arguments 'args' for doOne()
+	## MM: why?? is only needed if some args are not named; do we really want to support that?
+	## TODO ?? If there is a "..." among nmOne, match all the others ...
+	if(anyNA(io)) {
+	    if(!identical("...", (na.One <- nmOne[is.na(io)])) &&
+               i.sim == 1 && j == 1) { # <- message *once* only
+		## No warning: e.g., '...' argument should not warn
+		message(paste(
+		"FYI: Argument names from doOne() not present in varlist or '...' of subjob().",
+                    "\nNon-matching argument names (may be perfectly valid):",
+		    paste(sQuote(na.One), collapse=", ")))
+	    }
+	    io <- io[!is.na(io)]
+	}
+	if(length(io))
+	    args <- args[c(io, seq_along(args)[-io])]
+    }
 
     r4 <- doCallWE(doOne, args, timer = timer)
 
@@ -180,7 +197,7 @@ subjob <- function(i, pGrid, nonGrids, n.sim, seed, keepSeed=FALSE,
 }
 ##' { end }
 
-##' Check a user's "doOne" function; do similar things as mkAL():
+##' Check a user's "doOne" function; do similar things as mkAL() and/or subjob()
 doCheck <- function(doOne, vList, nChks = ng, verbose=TRUE)
 {
     stopifnot(is(vList, "varlist"))
@@ -191,12 +208,24 @@ doCheck <- function(doOne, vList, nChks = ng, verbose=TRUE)
     j.s <- sample.int(ng, nChks)
     for(j in j.s) {
 	if(verbose) cat(sprintf("j =%3d:", j))
-	## doOne()'s arguments, grids, non-grids, and '...':
+	## doOne()'s arguments, grids, non-grids (but no '...' here [change?])
 	gr <- pGrid[j, , drop=FALSE]
 	args <- if(length(nonGrids) == 0) as.list(gr) else c(gr, nonGrids)
+        ## __ keep in sync with subjob() above __
 	nmOne <- names(formals(doOne))
-	if(!identical(nmOne, "..."))# fix order for doOne()
-	    args <- args[match(names(args), nmOne)]
+	io <- match(nmOne, names(args))
+	if(anyNA(io)) {
+	    if(!identical("...", (na.One <- nmOne[is.na(io)])) &&
+               j == 1) { # <- message *once* only
+		message(paste(
+		"FYI: Argument names from doOne() not present in varlist.",
+                    "\nNon-matching argument names (may be perfectly valid):",
+		    paste(sQuote(na.One), collapse=", ")))
+	    }
+	    io <- io[!is.na(io)]
+	}
+	if(length(io))
+	    args <- args[c(io, seq_along(args)[-io])]
 
         r <- doCallWE(doOne, args)
         if(is.null(r$error))
@@ -226,6 +255,5 @@ doCheck <- function(doOne, vList, nChks = ng, verbose=TRUE)
 			  ni, 'sapply(getEl(vList, "inner"), length)'),
                  domain=NA)
     }
+    invisible(r)
 }
-
-

@@ -24,7 +24,7 @@
 	return("names() of the varlist must equal list length")
     if(!all(nzchar(nms)))
 	return("names(<varlist>) must be non-empty strings each")
-    if(any(vapply(values <- lapply(object, `[[`, "value"), is.null, NA)))
+    if(any(vapply(lapply(object, `[[`, "value"), is.null, NA)))
 	return("every variable in <varlist> must have a non-empty \"value\" part")
     if(!is.character(types <- vapply(object, `[[`, "", "type")) ||
        !all(nzchar(types)))
