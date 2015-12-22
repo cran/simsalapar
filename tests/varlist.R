@@ -52,7 +52,7 @@ doMat.in <- function(n, method, beta, kstep, formula) {
 }
 
 doArr1 <- function(...) array(rpois(7, lambda=10), 7)
-doArr1n <- function(...) array(rpois(7, lambda=10), 7, dimnames=letters[1:7])
+doArr1n <- function(...) array(rpois(7, lambda=10), 7, dimnames=list(letters[1:7]))
 doArr1.i <- function(n, method, beta, kstep, formula) {
     n <- length(kstep); array(rpois(n, lambda=10), n) }
 doArr3n <- function(...)

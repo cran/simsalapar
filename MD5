@@ -1,4 +1,4 @@
-d142c8d2e208bc6eee9a77bed840205a *DESCRIPTION
+b4ff76f4a6f7e0c6047b568f585f8d09 *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
@@ -41,4 +41,4 @@ e3c2bb01122dbef484a800df46996b53 *tests/getArray-swap.R
 73bd5c09b5a0467e4ba51f8fbe8766c3 *tests/tst-wrongs.R
 f51ff9f7709528916279f512573b4b70 *tests/tstTGforecasts.R
 7e3fadc36b2d8ec5e1ef2623ce102bce *tests/tstVaRsuperadd.R
-60f4e844fafdfc9919bcd8fa5b0f5586 *tests/varlist.R
+7a611ba31672135a3b84f9041f9b3668 *tests/varlist.R
