@@ -8,8 +8,8 @@
   \code{panel}.
 }
 \usage{
-mayplot(x, vList, row.vars, col.vars, xvar,
-       method = if(has.n.sim) "boxplot" else "lines",
+mayplot(x, vList, row.vars = NULL, col.vars = NULL,
+        xvar, method = if(has.n.sim) "boxplot" else "lines",
        panel.first = NULL, panel.last = NULL,
        type = "l", pch = NULL, ylim = "global",
        log = "", do.legend = TRUE,
@@ -24,18 +24,19 @@ mayplot(x, vList, row.vars, col.vars, xvar,
 \arguments{
   \item{x}{numeric \code{\link{array}} of \sQuote{rank} 5, i.e.,
     \code{length(dim(x)) == 5}, with \emph{named}
-    \code{\link{dimnames}}.}
+    \code{\link{dimnames}}; typically resulting from a call like
+    \code{\link{getArray}(\link{doMclapply}(..))}.}
   \item{vList}{a \code{\link{list}} of variable specifications, see
     \code{\link{varlist}} and \code{\link{mkGrid}}.}
 
-  \item{row.vars}{dimension name of x; this variable is plotted
-    in the plot rows}
-  \item{col.vars}{dimension name of x; this variable is plotted
-    in the plot columns}
-  \item{xvar}{dimension name of x; this variable is plotted
-    on the x axis of each sub-plot}
+  \item{row.vars}{a dimension name of \code{x}, a string; this variable
+    is plotted in the plot rows.}
+  \item{col.vars}{a dimension name of \code{x}, a string; this variable
+    is plotted in the plot columns.}
+  \item{xvar}{dimension name of \code{x}, a string; this variable is
+    plotted on the x axis of each sub-plot.}
   \item{method}{\code{\link{character}} string indicating the plot
-    method used. Currently available are \code{"boxplot"} (the default
+    method used.  Currently available are \code{"boxplot"} (the default
     if \code{vList} has \code{n.sim}) or \code{"lines"} (otherwise;
     \code{type} adjusts the type of lines used).}
   \item{panel.first, panel.last}{\code{\link{function}} or \code{NULL}
@@ -74,7 +75,7 @@ mayplot(x, vList, row.vars, col.vars, xvar,
       \item background color for the plots
       \item color of grid lines
     }}
-  \item{pcol}{plot base colors. If more colors than the provided ones
+  \item{pcol}{plot base colors.  If more colors than the provided ones
     are required, \code{\link{colorRampPalette}()} is used.}
 
   \item{grid.lwd}{lwd for grid}

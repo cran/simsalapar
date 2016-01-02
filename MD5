@@ -1,11 +1,11 @@
-b4ff76f4a6f7e0c6047b568f585f8d09 *DESCRIPTION
+9a4b52c4aad8187ed3231fe7a97970ca *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
 ecda104ad3509bc55a81ce69628a1b9e *R/doApply.R
 c122b99442fc4f7c2829c969140ea808 *R/doCallWE.R
 1e9b826ec6a0001abafe5b96bb062e7e *R/expr2latex.R
-c6ff68cc2913b9759178e14050750e91 *R/graphics.R
+b87d5c845d2bb21210dd384de8ff03be *R/graphics.R
 9e668bff8b0d4e16740e63dea4cf7ef6 *R/grid-stuff.R
 e9e47c2c30ddb4d9e8f6f22a216900b8 *R/subjob.R
 8b2420e3002a0a9b829e314b259b3ba9 *R/tables.R
@@ -28,7 +28,7 @@ f3c93d176c1b8d58445ca5ad98537ef1 *man/doCallWE.Rd
 419d8d7079ce97080a381ded8d76221e *man/doCheck.Rd
 227fe9972c6a06e35bb2ada615e52b59 *man/expr2latex.Rd
 9d2bc2d38fe7c43c63040f11d2016e14 *man/grid-stuff.Rd
-a702cf00da0ce46d420c96f1f51d00f1 *man/mayplot.Rd
+fdaac68d92ed04b10126fa839fcf2706 *man/mayplot.Rd
 4ea76a82ccfd2a78b25415439ba35737 *man/simsalapar-package.Rd
 991cc18597ba0295ddc0c32baa166dd3 *man/subjob.Rd
 168f7d3f815835ca4ebf5083d4821ec0 *man/toLatex-ftable.Rd

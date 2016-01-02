@@ -139,7 +139,7 @@ panelLegend <- function(method=c("boxplot", "lines"), type, pch,
 
 ##' Matrix plot with grid and gridBase, see help(mayplot) ../man/mayplot.Rd
 ##' { mayplot }
-mayplot <- function(x, vList, row.vars, col.vars, xvar,
+mayplot <- function(x, vList, row.vars = NULL, col.vars = NULL, xvar,
                     method = if(has.n.sim) "boxplot" else "lines",
                     panel.first = NULL, panel.last = NULL,
                     type = "l", pch = NULL,  ylim = "global",
@@ -155,27 +155,34 @@ mayplot <- function(x, vList, row.vars, col.vars, xvar,
 {
     ## basics ##################################################################
 
-    if(missing(row.vars)) row.vars <- NULL
-    if(missing(col.vars)) col.vars <- NULL
     avar <- names( dn <- dimnames(x) ) # *a*ll variables
     if(!all(avar %in% names(vList)))
 	stop("names(dimnames(.)) should all appear in names(vList)")
     d <- dim(x)
-    if(is.null(names(d))) names(d) <- avar else stopifnot(names(d) == avar)
+    if(!identical(avar, nd <- names(d))) {
+	if(!is.null(nd)) {
+	    nonB <- nd != ""
+	    if(any(nd[nonB] != avar[nonB]))
+		warning("names(dim(x)) do not match names(dimnames(x))")
+	}
+	names(d) <- avar
+    }
 
     ## deal with n.sim
     has.n.sim <- "n.sim" %in% avar
     if(has.n.sim)	 {
 	vLnsim <- vList[["n.sim"]]
-	stopifnot(vLnsim[["type"]] == "N",
-		  (n.sim <- d[["n.sim"]]) == vLnsim[["value"]])
+	if(vLnsim[["type"]] != "N")
+	    message("\"n.sim\"'s \"type\" is not \"N\".  Hopefully on purpose")
+	stopifnot((n.sim <- d[["n.sim"]]) == vLnsim[["value"]])
     }
-    else if(method=="boxplot") stop("method 'boxplot' not possible with no 'n.sim'")
+    else if(method == "boxplot")
+	stop("method 'boxplot' not possible with no 'n.sim'")
 
     ## deal with boxplot case
-    if(method=="boxplot" && n.sim <= 4)
+    if(method == "boxplot" && n.sim <= 4)
 	warning("box plots with ", n.sim, " values are rarely useful")
-    else if(method!="boxplot" && has.n.sim && n.sim > 1)
+    else if(method != "boxplot" && has.n.sim && n.sim > 1)
 	stop("has n.sim (= ", n.sim, ") > 1, but no boxplots.",
 	     "\n *** error bars not yet implemented!")
 
