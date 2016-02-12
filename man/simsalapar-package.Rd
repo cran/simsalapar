@@ -100,8 +100,18 @@ Marius Hofert and Martin Maechler <maechler@stat.math.ethz.ch>
 Maintainer: Marius Hofert <marius.hofert@math.ethz.ch>
 }
 \references{
-   Hofert, M. and \enc{Mächler}{Maechler}, M. (2014).
-   Parallel and other simulations in \R made easy: An end-to-end study.
+  \describe{
+    \item{Publication}{
+      Marius Hofert, Martin Maechler (2016).
+      Parallel and Other Simulations in \R Made Easy: An End-to-End Study.
+      \emph{Journal of Statistical Software}, \bold{69}(4), 1--44.
+      \doi{doi:10.18637/jss.v069.i04}}
+
+    \item{Preprint (for simsalapar 1.0-0; including timing info):}{
+      Hofert, M. and \enc{Mächler}{Maechler}, M. (2013).
+      Parallel and other simulations in \R made easy: An end-to-end study.
+      \url{http://arxiv.org/abs/1309.4402}}
+  }
 }
 \examples{
 \dontrun{ % we have a faster version as test

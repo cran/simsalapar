@@ -1,4 +1,4 @@
-9a4b52c4aad8187ed3231fe7a97970ca *DESCRIPTION
+a979ce28d7de84cbdfedc7b54a74a0c0 *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
@@ -10,6 +10,7 @@ b87d5c845d2bb21210dd384de8ff03be *R/graphics.R
 e9e47c2c30ddb4d9e8f6f22a216900b8 *R/subjob.R
 8b2420e3002a0a9b829e314b259b3ba9 *R/tables.R
 893c2792c66ee6fb1f9aed942c26ecf9 *R/tryCatchWE.R
+ead343ceb22bb75e96d05590ea21ead0 *build/partial.rdb
 54d4042888205a9d773ab627bfaa8eee *demo/00Index
 f2f651316019a4fce986fbd163e94767 *demo/TGforecasts.R
 11e4f19b8d27747b14192dff7c9b2273 *demo/VaRsuperadd.R
@@ -17,6 +18,7 @@ f21bb543a0f3862ad68459f006a55be2 *demo/latex.tables.R
 dcb37c3da50fa9a4c8235c2e44bf0609 *demo/rSeed-ex.R
 c25cd8af0a778eed4f3318f6e10d8d3f *demo/robcovMCD.R
 2ec7718297d6f14351f5d1c68dffb68f *demo/robust.mean.R
+293c3736e714dc2192ebce0f016cd56a *inst/CITATION
 6a4e70c4df00c1018646a6da0cc83f82 *inst/saved-sim/paper_2013-01-ex.rds
 a7bbea6c54ed1e0120ea4030d22360aa *inst/xtraR/Sweave-prelim.R
 79022dd6315cbb2e0a3264791375423b *inst/xtraR/assertErr-etc.R
@@ -29,7 +31,7 @@ f3c93d176c1b8d58445ca5ad98537ef1 *man/doCallWE.Rd
 227fe9972c6a06e35bb2ada615e52b59 *man/expr2latex.Rd
 9d2bc2d38fe7c43c63040f11d2016e14 *man/grid-stuff.Rd
 fdaac68d92ed04b10126fa839fcf2706 *man/mayplot.Rd
-4ea76a82ccfd2a78b25415439ba35737 *man/simsalapar-package.Rd
+242e14e5b06cbd5579898d3a1fb08cee *man/simsalapar-package.Rd
 991cc18597ba0295ddc0c32baa166dd3 *man/subjob.Rd
 168f7d3f815835ca4ebf5083d4821ec0 *man/toLatex-ftable.Rd
 4e53fb6e6f26cc14c9632f288860d24a *man/tryCatchWE.Rd
