@@ -149,7 +149,7 @@ if(canFork)
 system.time(resCF<- doClusterApply(varList, cluster=makeCluster(detectCores(),
                                    type="FORK"), sfile="TGforecasts_res_CF.rds",
 				   doOne=doOne, monitor=printInfo[["gfile"]]))
-if(hasRmpi)
+if(hasRmpi) # TODO: this seems to run forever under Mac
 system.time(resR <- doRmpi(varList, sfile="TGforecasts_res_R.rds",
 			   doOne=doOne, monitor=printInfo[["gfile"]]))
 system.time(resF <- doForeach(varList, sfile="TGforecasts_res_F.rds",

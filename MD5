@@ -1,4 +1,4 @@
-a979ce28d7de84cbdfedc7b54a74a0c0 *DESCRIPTION
+c2e8f4b7463c58210f8bcfba2a8fea44 *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
@@ -6,13 +6,13 @@ ecda104ad3509bc55a81ce69628a1b9e *R/doApply.R
 c122b99442fc4f7c2829c969140ea808 *R/doCallWE.R
 1e9b826ec6a0001abafe5b96bb062e7e *R/expr2latex.R
 b87d5c845d2bb21210dd384de8ff03be *R/graphics.R
-9e668bff8b0d4e16740e63dea4cf7ef6 *R/grid-stuff.R
+d3733cba6c31242741c26da3e67c5d1b *R/grid-stuff.R
 e9e47c2c30ddb4d9e8f6f22a216900b8 *R/subjob.R
 8b2420e3002a0a9b829e314b259b3ba9 *R/tables.R
-893c2792c66ee6fb1f9aed942c26ecf9 *R/tryCatchWE.R
-ead343ceb22bb75e96d05590ea21ead0 *build/partial.rdb
+50c1017acfa01413bc82db4dfe86e44c *R/tryCatchWE.R
+3db1b745c0f4eccdeb518163eae607a4 *build/partial.rdb
 54d4042888205a9d773ab627bfaa8eee *demo/00Index
-f2f651316019a4fce986fbd163e94767 *demo/TGforecasts.R
+f605c8bdab07792c43aa4a4149863fbe *demo/TGforecasts.R
 11e4f19b8d27747b14192dff7c9b2273 *demo/VaRsuperadd.R
 f21bb543a0f3862ad68459f006a55be2 *demo/latex.tables.R
 dcb37c3da50fa9a4c8235c2e44bf0609 *demo/rSeed-ex.R
@@ -25,13 +25,13 @@ a7bbea6c54ed1e0120ea4030d22360aa *inst/xtraR/Sweave-prelim.R
 b7fa602aae4a65c1b8b538f42d224a67 *man/LEseeds.Rd
 7b26a111aa307df1bb07a06c8678fccc *man/array-stuff.Rd
 722c092e987af894dda1286e475829b5 *man/device.Rd
-9f30265a0d8ef042ff7ce0528e5fbf81 *man/doApply.Rd
+d037367a24125d85b23a7b41e41a22f4 *man/doApply.Rd
 f3c93d176c1b8d58445ca5ad98537ef1 *man/doCallWE.Rd
 419d8d7079ce97080a381ded8d76221e *man/doCheck.Rd
 227fe9972c6a06e35bb2ada615e52b59 *man/expr2latex.Rd
 9d2bc2d38fe7c43c63040f11d2016e14 *man/grid-stuff.Rd
 fdaac68d92ed04b10126fa839fcf2706 *man/mayplot.Rd
-242e14e5b06cbd5579898d3a1fb08cee *man/simsalapar-package.Rd
+1768027f09cd86d3a8917b4a591c1521 *man/simsalapar-package.Rd
 991cc18597ba0295ddc0c32baa166dd3 *man/subjob.Rd
 168f7d3f815835ca4ebf5083d4821ec0 *man/toLatex-ftable.Rd
 4e53fb6e6f26cc14c9632f288860d24a *man/tryCatchWE.Rd
@@ -41,6 +41,6 @@ f5ba3cd0ba11900e5695bbb4b0007798 *man/wrapLaTable.Rd
 4e4b7f187c6d6b8b345268928b7ae601 *tests/doExtras.Rout.save
 e3c2bb01122dbef484a800df46996b53 *tests/getArray-swap.R
 73bd5c09b5a0467e4ba51f8fbe8766c3 *tests/tst-wrongs.R
-f51ff9f7709528916279f512573b4b70 *tests/tstTGforecasts.R
+1824cf89dec1dc251a0384638632feae *tests/tstTGforecasts.R
 7e3fadc36b2d8ec5e1ef2623ce102bce *tests/tstVaRsuperadd.R
 7a611ba31672135a3b84f9041f9b3668 *tests/varlist.R

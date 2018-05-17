@@ -5,8 +5,6 @@
 require(simsalapar)
 ## also  require(fGarch)
 
-(hasRmpi <- .Platform$OS.type!="windows" # <- as Rmpi produces errors on the winbuilder
- && require("Rmpi"))
 
 ### Variable list ##############################################################
 
@@ -135,26 +133,33 @@ environment(myMoni) <- environment(printInfo[["default"]])
 ## due to 'R CMD check --as-cran' allowing only <= 2 cores
 ## note: if doExtras, the check with '--as-cran' fails
 (doExtras <- simsalapar:::doExtras())
-(nc <- simsalapar:::nCores4test())
-(nc.win <- if(.Platform$OS.type=="windows") 1 else nc) # otherwise win-builder fails
+(nc <- if(.Platform$OS.type == "windows") {
+           1 # otherwise win-builder fails
+       } else min(simsalapar:::nCores4test(), 2)) # otherwise CRAN fails
 
 ## if simsalapar no longer *depends* on parallel:
 makeCluster <- parallel::makeCluster
 
-S.T(resM.<- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=TRUE))
-S.T(resM <- doMclapply    (vList, cores  =nc.win, doOne=doOne, monitor=myMoni))
+S.T(resM.<- doMclapply    (vList, cores = nc, doOne=doOne, monitor=TRUE))
+S.T(resM <- doMclapply    (vList, cores = nc, doOne=doOne, monitor=myMoni))
 S.T(resF <- doForeach     (vList, cluster=makeCluster(nc, type="PSOCK"),
                            doOne=doOne, monitor=printInfo[["fileEach"]]))
 ## For this problem, these are much slower on a typical 4-core desktop:
 S.T(resC <- doClusterApply(vList, cluster=makeCluster(nc, type="PSOCK"),
                            doOne=doOne, monitor=printInfo[["gfile"]]))
+## Note: Rmpi has a bug under openmpi-2.x (see https://stat.ethz.ch/pipermail/r-sig-hpc/2017-September/002063.html)
+if(FALSE) {
+    (hasRmpi <- .Platform$OS.type!="windows" # <- as Rmpi produces errors on the winbuilder
+        && require("Rmpi"))
+}
+hasRmpi <- FALSE # for now...
 if(hasRmpi)
-S.T(resR <- doRmpi        (vList, nslaves=nc, doOne=doOne, monitor=TRUE))
+    S.T(resR <- doRmpi(vList, nslaves=nc, doOne=doOne, monitor=TRUE))
 if(doExtras) { # use all available cores
   print(S.T(resC.<- doClusterApply(vList, cluster=makeCluster(nc, type="PSOCK"),
                                    doOne=doOne, monitor=myMoni)))
   if(hasRmpi)
-  print(S.T(resR.<- doRmpi	  (vList, nslaves=nc, doOne=doOne, monitor=myMoni)))
+      print(S.T(resR.<- doRmpi(vList, nslaves=nc, doOne=doOne, monitor=myMoni)))
 }
 
 ## check that we have the same results

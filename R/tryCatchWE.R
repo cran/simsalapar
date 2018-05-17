@@ -14,18 +14,13 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-##' Catching and storing warnings and errors simultaneously
-##'
-##' Catches and saves both warnings and errors and in the case of
-##' a warning, also keeps the computed result.
-##'
-##' @title Catching and storing warnings and errors simultaneously
+##' @title Catching Warnings and Errors Simultaneously
 ##' @param expr assignment or function evaluation
 ##' @return list with 'value'  : value of expr or simpleError
 ##'		      'warning': simpleWarning or NULL
-##' @author Martin Maechler and Marius Hofert, based on hints from
+##' @author Martin Maechler and Marius Hofert
 ##' @note Based on Luke Tierney's and Bill Dunlap's suggestions, see
-##' \url{https://stat.ethz.ch/pipermail/r-help/2010-December/262626.html}
+##'       \url{https://stat.ethz.ch/pipermail/r-help/2010-December/262626.html}
 ##' { tryCatch.W.E }
 tryCatch.W.E <- function(expr){
     W <- NULL

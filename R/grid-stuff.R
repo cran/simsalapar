@@ -34,7 +34,7 @@
     TRUE
 }
 
-setClass("varlist", "namedList", validity = .valid.varlist)
+setClass("varlist", contains = "namedList", validity = .valid.varlist)
 
 varlist <- function(...) {
     n <- length(ls <- list(...))

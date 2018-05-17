@@ -1,4 +1,3 @@
-\newcommand{\CRANpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \name{doApply}
 \title{Functions for Iterating Over All Subjobs}
 \alias{doLapply}

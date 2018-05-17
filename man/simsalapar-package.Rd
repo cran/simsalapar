@@ -1,4 +1,3 @@
-\newcommand{\CRANpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \name{simsalapar-package}
 \alias{simsalapar-package}
 \alias{simsalapar}
@@ -9,22 +8,11 @@
   simulation studies, including parallel computations, in \R.
 }
 \details{
-  %% TODO Reminder to keep this up to date
-  \tabular{ll}{
-    Package: \tab simsalapar\cr
-    %% Version: \tab 1.0-0\cr
-    %% Date: \tab 2013-01-19\cr
-    Depends: \tab R (>= 2.15.2), graphics, parallel, Rmpi\cr
-    Imports: \tab utils, grid, methods, xtable, sfsmisc, gridBase (>= 0.4-6),\cr
-             \tab foreach, colorspace, doParallel\cr
-    Suggests: \tab grid, Hmisc, copula\cr
-    KeepSource: \tab TRUE\cr
-    maybe_OS_type: \tab unix\cr
-    License: \tab GPL (>= 3)\cr
-    Encoding: \tab UTF-8\cr
-    %% Built: \tab R 2.15.2; ; 2013-01-25 17:00:49 UTC; unix\cr
-  }
-  %}
+
+  The DESCRIPTION file:
+  \packageDESCRIPTION{simsalapar}
+  \packageIndices{simsalapar}
+
   \subsection{Setting up a simulation}{
     \describe{
       \item{\code{\link{varlist}}()}{creates a variable specification list.}
@@ -105,12 +93,12 @@ Maintainer: Marius Hofert <marius.hofert@math.ethz.ch>
       Marius Hofert, Martin Maechler (2016).
       Parallel and Other Simulations in \R Made Easy: An End-to-End Study.
       \emph{Journal of Statistical Software}, \bold{69}(4), 1--44.
-      \doi{doi:10.18637/jss.v069.i04}}
+      \doi{10.18637/jss.v069.i04}}
 
     \item{Preprint (for simsalapar 1.0-0; including timing info):}{
       Hofert, M. and \enc{Mächler}{Maechler}, M. (2013).
       Parallel and other simulations in \R made easy: An end-to-end study.
-      \url{http://arxiv.org/abs/1309.4402}}
+      \url{https://arxiv.org/abs/1309.4402}}
   }
 }
 \examples{
