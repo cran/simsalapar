@@ -50,7 +50,7 @@ cattablines(x, rsep = "\\\\\\\\", csep = " & ", include.rownames = TRUE)
 \arguments{
   \item{object}{an \code{\link{ftable}} to be converted to a LaTeX
     table. This is accomplished via \code{\link{format}}ting it.}
-  \item{x}{for \code{fftable()} a \code{\link{character}} \code{\link{matrix}};
+  \item{x}{for \code{fftable()} an \code{\link{ftable}} object;
     for \code{tablines()} a \code{\link{character}} \code{\link{matrix}} with
     attributes \code{nrv} and \code{ncv} (as returned by \code{fftable()})
     giving the number of row and column variables, respectively; for

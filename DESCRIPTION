@@ -1,6 +1,6 @@
 Package: simsalapar
-Version: 1.0-10
-Date: 2018-05-16
+Version: 1.0-11
+Date: 2022-04-06
 Title: Tools for Simulation Studies in Parallel
 Description: Tools for setting up ("design"), conducting, and evaluating
   large-scale simulation studies with graphics and tables, including
@@ -19,6 +19,6 @@ KeepSource: yes
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2018-05-17 20:53:06 UTC; mhofert
+Packaged: 2022-04-06 12:42:58 UTC; mhofert
 Repository: CRAN
-Date/Publication: 2018-05-17 22:00:23 UTC
+Date/Publication: 2022-04-06 13:30:02 UTC

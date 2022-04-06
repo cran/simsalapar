@@ -1,16 +1,16 @@
-c2e8f4b7463c58210f8bcfba2a8fea44 *DESCRIPTION
+19f1dc42eff417bf9273b89e37ecb39a *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
 ecda104ad3509bc55a81ce69628a1b9e *R/doApply.R
 c122b99442fc4f7c2829c969140ea808 *R/doCallWE.R
 1e9b826ec6a0001abafe5b96bb062e7e *R/expr2latex.R
-b87d5c845d2bb21210dd384de8ff03be *R/graphics.R
+7570ebb9e65768b8fec8246078e3e514 *R/graphics.R
 d3733cba6c31242741c26da3e67c5d1b *R/grid-stuff.R
 e9e47c2c30ddb4d9e8f6f22a216900b8 *R/subjob.R
 8b2420e3002a0a9b829e314b259b3ba9 *R/tables.R
 50c1017acfa01413bc82db4dfe86e44c *R/tryCatchWE.R
-3db1b745c0f4eccdeb518163eae607a4 *build/partial.rdb
+7b4a8bb2485d7a585ac049c82d05c3fc *build/partial.rdb
 54d4042888205a9d773ab627bfaa8eee *demo/00Index
 f605c8bdab07792c43aa4a4149863fbe *demo/TGforecasts.R
 11e4f19b8d27747b14192dff7c9b2273 *demo/VaRsuperadd.R
@@ -24,7 +24,7 @@ a7bbea6c54ed1e0120ea4030d22360aa *inst/xtraR/Sweave-prelim.R
 79022dd6315cbb2e0a3264791375423b *inst/xtraR/assertErr-etc.R
 b7fa602aae4a65c1b8b538f42d224a67 *man/LEseeds.Rd
 7b26a111aa307df1bb07a06c8678fccc *man/array-stuff.Rd
-722c092e987af894dda1286e475829b5 *man/device.Rd
+9e53b28267a6400749836f9469fd392b *man/device.Rd
 d037367a24125d85b23a7b41e41a22f4 *man/doApply.Rd
 f3c93d176c1b8d58445ca5ad98537ef1 *man/doCallWE.Rd
 419d8d7079ce97080a381ded8d76221e *man/doCheck.Rd
@@ -33,7 +33,7 @@ f3c93d176c1b8d58445ca5ad98537ef1 *man/doCallWE.Rd
 fdaac68d92ed04b10126fa839fcf2706 *man/mayplot.Rd
 1768027f09cd86d3a8917b4a591c1521 *man/simsalapar-package.Rd
 991cc18597ba0295ddc0c32baa166dd3 *man/subjob.Rd
-168f7d3f815835ca4ebf5083d4821ec0 *man/toLatex-ftable.Rd
+ba07aea9b403b8552e5265bbce56f903 *man/toLatex-ftable.Rd
 4e53fb6e6f26cc14c9632f288860d24a *man/tryCatchWE.Rd
 6760b78669f97f6fa3f6231001dc6e1c *man/varlist.Rd
 f5ba3cd0ba11900e5695bbb4b0007798 *man/wrapLaTable.Rd

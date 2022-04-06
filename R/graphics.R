@@ -262,7 +262,7 @@ mayplot <- function(x, vList, row.vars = NULL, col.vars = NULL, xvar,
     ## panel (function) *and* legend (grob) ####################################
     check.panel <- function(p)
         is.function(p) && length(ff <- formals(p)) >= 3 &&
-            c("y", "col") %in% names(ff[-1]) # all but first must match
+            all(c("y", "col") %in% names(ff[-1])) # all but first must match
 
     ## construct default panel function with matching legend
     if(is.null(pch)) pch <- if(type %in% c("p","o","b")) 1 # else NULL; pch from legendGrob()

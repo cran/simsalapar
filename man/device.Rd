@@ -49,5 +49,6 @@ doPDF <- !dev.interactive(orNone=TRUE)
 if(doPDF) pdf(file=(file <- "crop_device.pdf"), width=6, height=6)
 plot(1)
 if(doPDF) dev.off.pdf(file)
+if(file.exists(file)) file.remove(file)
 }
 \keyword{utilities}
