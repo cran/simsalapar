@@ -36,7 +36,7 @@ doLapply <- function(vList, seed="seq", repFirst=TRUE, sfile=NULL,
 {
     if(!is.null(r <- maybeRead(sfile))) return(r)
     stopifnot(is.function(subjob.), is.function(doOne))
-    if(!(is.null(seed) || is.na(seed) || is.numeric(seed) ||
+    if(!(is.null(seed) || any(is.na(seed)) || is.numeric(seed) ||
          (is.list(seed) && all(vapply(seed, is.numeric, NA))) ||
          is.character(seed) ))
         stop(.invalid.seed.msg)
@@ -110,7 +110,7 @@ doForeach <-
         stop("Precisely one of 'cluster' or 'cores' has to be not NULL")
     if(!is.null(r <- maybeRead(sfile))) return(r)
     stopifnot(is.function(subjob.), is.function(doOne))
-    if(!(is.null(seed) || is.na(seed) || is.numeric(seed) ||
+    if(!(is.null(seed) || any(is.na(seed)) || is.numeric(seed) ||
          (is.list(seed) && all(vapply(seed, is.numeric, NA))) ||
          is.character(seed) ))
         stop(.invalid.seed.msg)
@@ -223,7 +223,7 @@ doRmpi <- function(vList,
 
     if(!is.null(r <- maybeRead(sfile))) return(r)
     stopifnot(is.function(subjob.), is.function(doOne))
-    if(!(is.null(seed) || is.na(seed) || is.numeric(seed) ||
+    if(!(is.null(seed) || any(is.na(seed)) || is.numeric(seed) ||
          (is.list(seed) && all(vapply(seed, is.numeric, NA))) ||
          is.character(seed) ))
         stop(.invalid.seed.msg)
@@ -305,7 +305,7 @@ doMclapply <-
 {
     if(!is.null(r <- maybeRead(sfile))) return(r)
     stopifnot(is.function(subjob.), is.function(doOne))
-    if(!(is.null(seed) || is.na(seed) || is.numeric(seed) ||
+    if(!(is.null(seed) || any(is.na(seed)) || is.numeric(seed) ||
          (is.list(seed) && all(vapply(seed, is.numeric, NA))) ||
          is.character(seed) ))
         stop(.invalid.seed.msg)
@@ -373,7 +373,7 @@ doClusterApply <-
 {
     if(!is.null(r <- maybeRead(sfile))) return(r)
     stopifnot(is.function(subjob.), is.function(doOne))
-    if(!(is.null(seed) || is.na(seed) || is.numeric(seed) ||
+    if(!(is.null(seed) || any(is.na(seed)) || is.numeric(seed) ||
          (is.list(seed) && all(vapply(seed, is.numeric, NA))) ||
          is.character(seed) ))
         stop(.invalid.seed.msg)

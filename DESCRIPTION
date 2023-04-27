@@ -1,12 +1,12 @@
 Package: simsalapar
-Version: 1.0-11
-Date: 2022-04-06
+Version: 1.0-12
+Date: 2023-04-26
 Title: Tools for Simulation Studies in Parallel
 Description: Tools for setting up ("design"), conducting, and evaluating
   large-scale simulation studies with graphics and tables, including
   parallel computations.
 Author: Marius Hofert and Martin Maechler <maechler@stat.math.ethz.ch>
-Maintainer: Marius Hofert <marius.hofert@uwaterloo.ca>
+Maintainer: Marius Hofert <mhofert@hku.hk>
 Depends: R (>= 3.1.0), graphics
 Imports: stats, parallel, utils, grDevices, methods, grid, sfsmisc,
         gridBase (>= 0.4-6), colorspace
@@ -19,6 +19,6 @@ KeepSource: yes
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2022-04-06 12:42:58 UTC; mhofert
+Packaged: 2023-04-26 09:48:42 UTC; mhofert
 Repository: CRAN
-Date/Publication: 2022-04-06 13:30:02 UTC
+Date/Publication: 2023-04-27 08:30:02 UTC

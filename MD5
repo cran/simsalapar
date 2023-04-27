@@ -1,8 +1,8 @@
-19f1dc42eff417bf9273b89e37ecb39a *DESCRIPTION
+d3179f351575a0f95e4b9e7ec4ef5a86 *DESCRIPTION
 fffcdb86ac259726372a4e68e97afd9a *NAMESPACE
 c749977312dcb8aa93447f6aa87b77da *R/array-stuff.R
 7ea9c6eba1821233a27d1f6066176dbf *R/device.R
-ecda104ad3509bc55a81ce69628a1b9e *R/doApply.R
+ac07e6453d72a4b7e5b8bc6877508f99 *R/doApply.R
 c122b99442fc4f7c2829c969140ea808 *R/doCallWE.R
 1e9b826ec6a0001abafe5b96bb062e7e *R/expr2latex.R
 7570ebb9e65768b8fec8246078e3e514 *R/graphics.R
@@ -10,7 +10,7 @@ d3733cba6c31242741c26da3e67c5d1b *R/grid-stuff.R
 e9e47c2c30ddb4d9e8f6f22a216900b8 *R/subjob.R
 8b2420e3002a0a9b829e314b259b3ba9 *R/tables.R
 50c1017acfa01413bc82db4dfe86e44c *R/tryCatchWE.R
-7b4a8bb2485d7a585ac049c82d05c3fc *build/partial.rdb
+de49affb6fb4fcc45052aeab418cea34 *build/partial.rdb
 54d4042888205a9d773ab627bfaa8eee *demo/00Index
 f605c8bdab07792c43aa4a4149863fbe *demo/TGforecasts.R
 11e4f19b8d27747b14192dff7c9b2273 *demo/VaRsuperadd.R
